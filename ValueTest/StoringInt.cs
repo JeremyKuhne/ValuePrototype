@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ValuePrototype;
+﻿using ValuePrototype;
 using Xunit;
 
 namespace ValueTest
@@ -15,6 +10,11 @@ namespace ValueTest
         {
             ValueCompact value = new(42);
             int result = value.As<int>();
+            Assert.Equal(42, result);
+
+            ValueCompactFast valueFast = new(42);
+            bool success = valueFast.TryGetValue(out result);
+            Assert.True(success);
             Assert.Equal(42, result);
         }
     }
