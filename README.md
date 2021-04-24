@@ -1,6 +1,8 @@
 # Value Prototype
 Wrapping arbitrary values without boxing of common types.
 
+[![Build](https://github.com/JeremyKuhne/ValuePrototype/actions/workflows/dotnet.yml/badge.svg)](https://github.com/JeremyKuhne/ValuePrototype/actions/workflows/dotnet.yml)
+
 ### Goals
 
 - Take any value, including null
