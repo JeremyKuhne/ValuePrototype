@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
+#pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
+
 namespace ValuePrototype
 {
     public readonly struct ValueCompact
@@ -260,16 +262,16 @@ namespace ValuePrototype
         public T? As<T>()
         {
             // if value is stored in _i64 field
-#pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
             if (_obj == typeof(T))
-#pragma warning restore CS0252 // Possible unintended reference comparison; left hand side needs cast
             {
                 if (_obj.Equals(typeof(int)))
                 {
-                    object i32 = (int)_i64;
-                    return (T)i32;
+                    return CastTo<T>();
                 }
-                else throw new NotImplementedException();
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
 
             // if value is stored in _obj field
@@ -286,6 +288,11 @@ namespace ValuePrototype
                 return default;
             }
 
+            if (typeof(T) == typeof(int) && _obj == typeof(int?))
+            {
+                return CastTo<T>();
+            }
+
             throw new InvalidCastException();
         }
         #endregion
@@ -298,5 +305,15 @@ namespace ValuePrototype
 
             public Type Value => _value;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private T CastTo<T>()
+        {
+            Debug.Assert(typeof(T).IsPrimitive);
+            T value = Unsafe.As<long, T>(ref Unsafe.AsRef(_i64));
+            return value;
+        }
     }
 }
+
+#pragma warning restore CS0252 // Possible unintended reference comparison; left hand side needs cast

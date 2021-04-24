@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
+
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -9,7 +11,7 @@ namespace ValuePrototype
     public readonly struct ValueCompactFast
     {
         private static readonly object NullInt32 = new();
-        private static readonly object Int32 = new();
+        private static readonly TypeFlag Int32 = new(typeof(int));
 
         private readonly Union _union;
         private readonly object? _obj;
@@ -33,6 +35,11 @@ namespace ValuePrototype
                 var type = _obj as Type;
                 if (type != null) return type;
 
+                if (_obj is TypeFlag typeFlag)
+                {
+                    return typeFlag.Type;
+                }
+
                 type = _obj.GetType();
 
                 if (type == typeof(byte[])) return typeof(string);
@@ -40,7 +47,11 @@ namespace ValuePrototype
                 {
                     if (_obj == NullInt32) return typeof(int?);
                 }
-                if (type == typeof(TypeBox)) return typeof(Type);
+
+                if (type == typeof(TypeBox))
+                {
+                    return typeof(Type);
+                }
 
                 return type;
             }
@@ -272,7 +283,6 @@ namespace ValuePrototype
         {
             bool success;
 
-#pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
             // Checking the type gets all of the non-relevant compares elided by the JIT
             if (_obj is not null && ((typeof(T) == typeof(bool) && _obj == typeof(bool))
                 || (typeof(T) == typeof(byte) && _obj == typeof(byte))
@@ -295,7 +305,6 @@ namespace ValuePrototype
             {
                 success = TryGetSlow(out value);
             }
-#pragma warning restore CS0252 // Possible unintended reference comparison; left hand side needs cast
 
             return success;
         }
@@ -305,22 +314,54 @@ namespace ValuePrototype
             Type type = typeof(T);
             value = default!;
 
-            // if value is stored in _obj field
-            if (_obj?.GetType() == type)
+            if (_obj is null)
             {
+                // A null is stored, it can only be assigned to a reference type.
+                return !type.IsValueType;
+            }
+
+            Type objectType = _obj.GetType();
+
+            if (objectType == type || type.IsAssignableFrom(objectType))
+            {
+                // Same, or assignable.
                 value = (T)_obj;
                 return true;
             }
 
-            // if value is stored in a "box"
             if (type == typeof(Type) && _obj is TypeBox box)
             {
+                // The value was actually a Type object.
                 value = (T)(object)box.Value;
                 return true;
             }
 
-            if (_obj is null && !type.IsValueType)
+            if (Nullable.GetUnderlyingType(type) is Type nullableType)
             {
+                // TODO: Is there any way to do this with one cast for all types?
+                if (nullableType == typeof(int) && _obj == Int32)
+                {
+                    value = Unsafe.As<int?, T>(ref Unsafe.AsRef((int?)_union.Int32));
+                    return true;
+                }
+            }
+
+            // Value is nullable
+            if ((type == typeof(bool) && _obj == typeof(bool?))
+                || (type == typeof(byte) && _obj == typeof(byte?))
+                || (type == typeof(char) && _obj == typeof(char?))
+                || (type == typeof(decimal) && _obj == typeof(decimal?))
+                || (type == typeof(double) && _obj == typeof(double?))
+                || (type == typeof(short) && _obj == typeof(short?))
+                || (type == typeof(int) && _obj == typeof(int?))
+                || (type == typeof(long) && _obj == typeof(long?))
+                || (type == typeof(sbyte) && _obj == typeof(sbyte?))
+                || (type == typeof(float) && _obj == typeof(float?))
+                || (type == typeof(ushort) && _obj == typeof(ushort?))
+                || (type == typeof(uint) && _obj == typeof(uint?))
+                || (type == typeof(ulong) && _obj == typeof(ulong?)))
+            {
+                value = CastTo<T>();
                 return true;
             }
 
@@ -346,37 +387,27 @@ namespace ValuePrototype
             return value;
         }
 
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //private T CastTo<T, TypeOf>(TypeOf type)
+        //{
+        //    Debug.Assert(typeof(T).IsPrimitive);
+        //    T value = (T)CastTo<TypeOf>();
+        //    return value;
+        //}
 
-        private T? AsSlow<T>()
-        {
-            // if value is stored in _obj field
-            if (_obj?.GetType() == typeof(T)) return (T)_obj;
-
-            // if value is stored in a "box"
-            if (typeof(T) == typeof(Type) && _obj is TypeBox box)
-            {
-                return (T)(object)box.Value;
-            }
-
-            if (_obj is null && !typeof(T).IsValueType)
-            {
-                return default;
-            }
-
-            ThrowInvalidCast();
-            return default;
-        }
         #endregion
 
         private class TypeBox
         {
-            private readonly Type _value;
-
-            public TypeBox(Type value) => _value = value;
-
-            public Type Value => _value;
+            public TypeBox(Type value) => Value = value;
+            public Type Value { get; }
         }
 
+        private class TypeFlag
+        {
+            public TypeFlag(Type value) => Type = value;
+            public Type Type { get; }
+        }
 
         [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
         private struct Union
@@ -399,3 +430,5 @@ namespace ValuePrototype
         }
     }
 }
+
+#pragma warning restore CS0252 // Possible unintended reference comparison; left hand side needs cast
