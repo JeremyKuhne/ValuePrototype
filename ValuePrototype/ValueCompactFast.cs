@@ -326,25 +326,23 @@ namespace ValuePrototype
 
         private bool TryGetSlow<T>(out T value)
         {
-            Type type = typeof(T);
-            value = default!;
-
             if (_obj is null)
             {
                 // A null is stored, it can only be assigned to a reference type.
-                return !type.IsValueType;
+                value = default!;
+                return !typeof(T).IsValueType;
             }
 
             Type objectType = _obj.GetType();
 
-            if (objectType == type || type.IsAssignableFrom(objectType))
+            if (objectType == typeof(T) || typeof(T).IsAssignableFrom(objectType))
             {
                 // Same, or assignable.
                 value = (T)_obj;
                 return true;
             }
 
-            if (Nullable.GetUnderlyingType(type) is Type nullableType)
+            if (Nullable.GetUnderlyingType(typeof(T)) is Type nullableType)
             {
                 // Requested a nullable, see if we have a the underlying type.
 
@@ -362,19 +360,19 @@ namespace ValuePrototype
                 }
             }
 
-            if ((type == typeof(bool) && _obj == typeof(bool?))
-                || (type == typeof(byte) && _obj == typeof(byte?))
-                || (type == typeof(char) && _obj == typeof(char?))
-                || (type == typeof(decimal) && _obj == typeof(decimal?))
-                || (type == typeof(double) && _obj == typeof(double?))
-                || (type == typeof(short) && _obj == typeof(short?))
-                || (type == typeof(int) && _obj == typeof(int?))
-                || (type == typeof(long) && _obj == typeof(long?))
-                || (type == typeof(sbyte) && _obj == typeof(sbyte?))
-                || (type == typeof(float) && _obj == typeof(float?))
-                || (type == typeof(ushort) && _obj == typeof(ushort?))
-                || (type == typeof(uint) && _obj == typeof(uint?))
-                || (type == typeof(ulong) && _obj == typeof(ulong?)))
+            if ((typeof(T) == typeof(bool) && _obj == typeof(bool?))
+                || (typeof(T) == typeof(byte) && _obj == typeof(byte?))
+                || (typeof(T) == typeof(char) && _obj == typeof(char?))
+                || (typeof(T) == typeof(decimal) && _obj == typeof(decimal?))
+                || (typeof(T) == typeof(double) && _obj == typeof(double?))
+                || (typeof(T) == typeof(short) && _obj == typeof(short?))
+                || (typeof(T) == typeof(int) && _obj == typeof(int?))
+                || (typeof(T) == typeof(long) && _obj == typeof(long?))
+                || (typeof(T) == typeof(sbyte) && _obj == typeof(sbyte?))
+                || (typeof(T) == typeof(float) && _obj == typeof(float?))
+                || (typeof(T) == typeof(ushort) && _obj == typeof(ushort?))
+                || (typeof(T) == typeof(uint) && _obj == typeof(uint?))
+                || (typeof(T) == typeof(ulong) && _obj == typeof(ulong?)))
             {
                 // Value is nullable
                 value = CastTo<T>();
@@ -382,13 +380,14 @@ namespace ValuePrototype
             }
 
 
-            if (type == typeof(Type) && _obj is TypeBox box)
+            if (typeof(T) == typeof(Type) && _obj is TypeBox box)
             {
                 // The value was actually a Type object.
                 value = (T)(object)box.Value;
                 return true;
             }
 
+            value = default!;
             return false;
         }
 

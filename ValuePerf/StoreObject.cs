@@ -1,0 +1,37 @@
+﻿using System;
+using BenchmarkDotNet.Attributes;
+using ValuePrototype;
+
+namespace ValuePerf
+{
+    public class StoreObject
+    {
+        private static A s_A;
+        private static B s_B;
+
+        [Benchmark(Baseline = true)]
+        public A TryOut()
+        {
+            ValueCompactFast value = new(s_A);
+            value.TryGetValue(out A result);
+            return result;
+        }
+
+        [Benchmark]
+        public A TryOutAssignable()
+        {
+            ValueCompactFast value = new(s_B);
+            value.TryGetValue(out A result);
+            return result;
+        }
+
+        public class A : I { }
+        public class B : A, I { }
+        public class C : B, I { }
+
+        public interface I
+        {
+            string? ToString();
+        }
+    }
+}
