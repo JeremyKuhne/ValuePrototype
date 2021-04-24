@@ -10,8 +10,10 @@ namespace ValuePrototype
 {
     public readonly struct ValueCompactFast
     {
-        private static readonly object NullInt32 = new();
         private static readonly TypeFlag Int32 = new(typeof(int));
+        private static readonly TypeFlag NullInt32 = new(typeof(int?));
+        private static readonly TypeFlag Int64 = new(typeof(long));
+        private static readonly TypeFlag NullInt64 = new(typeof(long?));
 
         private readonly Union _union;
         private readonly object? _obj;
@@ -68,17 +70,8 @@ namespace ValuePrototype
             _union.Int32 = value;
         }
 
-        public static implicit operator ValueCompactFast(int value)
-        {
-            return new ValueCompactFast(value);
-        }
-
-        public static explicit operator int(ValueCompactFast variant)
-        {
-            if (variant._obj is null || !variant._obj.Equals(typeof(int))) ThrowInvalidCast();
-            return variant._union.Int32;
-        }
-
+        public static implicit operator ValueCompactFast(int value) => new(value);
+        public static explicit operator int(ValueCompactFast variant) => variant.As<int>();
         #endregion
 
         #region Nullable<Int32>
@@ -97,19 +90,40 @@ namespace ValuePrototype
             }
         }
 
-        public static implicit operator ValueCompactFast(int? value)
+        public static implicit operator ValueCompactFast(int? value) => new(value);
+        public static explicit operator int?(ValueCompactFast variant) => variant.As<int?>();
+        #endregion
+
+        #region Int64
+        public ValueCompactFast(long value)
         {
-            return new ValueCompactFast(value);
+            this = default;
+            _obj = Int64;
+            _union.Int64 = value;
         }
 
-        public static explicit operator int?(ValueCompactFast variant)
+        public static implicit operator ValueCompactFast(long value) => new(value);
+        public static explicit operator long(ValueCompactFast variant) => variant.As<long>();
+        #endregion
+
+        #region Nullable<Int64>
+        public ValueCompactFast(long? value)
         {
-            if (variant._obj == NullInt32) return null;
-            if (variant._obj is not null && variant._obj.Equals(typeof(int?))) return variant._union.Int32;
-            ThrowInvalidCast();
-            return default;
+            this = default;
+            if (value.HasValue)
+            {
+                _obj = typeof(long?);
+                _union.Int64 = value.Value;
+            }
+            else
+            {
+                _obj = NullInt64;
+                _union = default;
+            }
         }
 
+        public static implicit operator ValueCompactFast(long? value) => new(value);
+        public static explicit operator long?(ValueCompactFast variant) => variant.As<long?>();
         #endregion
 
         #region Double
@@ -279,6 +293,7 @@ namespace ValuePrototype
             return new ValueCompactFast(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe bool TryGetValue<T>(out T value)
         {
             bool success;
@@ -291,7 +306,7 @@ namespace ValuePrototype
                 || (typeof(T) == typeof(double) && _obj == typeof(double))
                 || (typeof(T) == typeof(short) && _obj == typeof(short))
                 || (typeof(T) == typeof(int) && _obj == Int32)
-                || (typeof(T) == typeof(long) && _obj == typeof(long))
+                || (typeof(T) == typeof(long) && _obj == Int64)
                 || (typeof(T) == typeof(sbyte) && _obj == typeof(sbyte))
                 || (typeof(T) == typeof(float) && _obj == typeof(float))
                 || (typeof(T) == typeof(ushort) && _obj == typeof(ushort))
@@ -329,24 +344,24 @@ namespace ValuePrototype
                 return true;
             }
 
-            if (type == typeof(Type) && _obj is TypeBox box)
-            {
-                // The value was actually a Type object.
-                value = (T)(object)box.Value;
-                return true;
-            }
-
             if (Nullable.GetUnderlyingType(type) is Type nullableType)
             {
+                // Requested a nullable, see if we have a the underlying type.
+
                 // TODO: Is there any way to do this with one cast for all types?
                 if (nullableType == typeof(int) && _obj == Int32)
                 {
                     value = Unsafe.As<int?, T>(ref Unsafe.AsRef((int?)_union.Int32));
                     return true;
                 }
+
+                if (nullableType == typeof(long) && _obj == Int64)
+                {
+                    value = Unsafe.As<long?, T>(ref Unsafe.AsRef((long?)_union.Int64));
+                    return true;
+                }
             }
 
-            // Value is nullable
             if ((type == typeof(bool) && _obj == typeof(bool?))
                 || (type == typeof(byte) && _obj == typeof(byte?))
                 || (type == typeof(char) && _obj == typeof(char?))
@@ -361,14 +376,23 @@ namespace ValuePrototype
                 || (type == typeof(uint) && _obj == typeof(uint?))
                 || (type == typeof(ulong) && _obj == typeof(ulong?)))
             {
+                // Value is nullable
                 value = CastTo<T>();
+                return true;
+            }
+
+
+            if (type == typeof(Type) && _obj is TypeBox box)
+            {
+                // The value was actually a Type object.
+                value = (T)(object)box.Value;
                 return true;
             }
 
             return false;
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T As<T>()
         {
             if (!TryGetValue<T>(out T value))
@@ -386,15 +410,6 @@ namespace ValuePrototype
             T value = Unsafe.As<Union, T>(ref Unsafe.AsRef(_union));
             return value;
         }
-
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //private T CastTo<T, TypeOf>(TypeOf type)
-        //{
-        //    Debug.Assert(typeof(T).IsPrimitive);
-        //    T value = (T)CastTo<TypeOf>();
-        //    return value;
-        //}
-
         #endregion
 
         private class TypeBox
