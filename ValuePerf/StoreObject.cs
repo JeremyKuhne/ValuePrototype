@@ -6,8 +6,8 @@ namespace ValuePerf
 {
     public class StoreObject
     {
-        private static A s_A;
-        private static B s_B;
+        private static A s_A = new();
+        private static B s_B = new();
 
         [Benchmark(Baseline = true)]
         public A TryOut()

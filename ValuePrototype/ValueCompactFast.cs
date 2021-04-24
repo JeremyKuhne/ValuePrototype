@@ -9,18 +9,13 @@ namespace ValuePrototype
 {
     public readonly partial struct ValueCompactFast
     {
-        private static readonly TypeFlag Int32 = new(typeof(int));
-        private static readonly TypeFlag NullInt32 = new(typeof(int?));
-        private static readonly TypeFlag Int64 = new(typeof(long));
-        private static readonly TypeFlag NullInt64 = new(typeof(long?));
-
         private readonly Union _union;
-        private readonly object? _obj;
+        private readonly object? _object;
 
-        public ValueCompactFast(object? obj)
+        public ValueCompactFast(object? value)
         {
-            Debug.Assert(obj is null || obj.GetType() != typeof(Type));
-            _obj = obj;
+            Debug.Assert(value is null || value.GetType() != typeof(Type));
+            _object = value;
             _union = default;
         }
 
@@ -28,25 +23,27 @@ namespace ValuePrototype
         {
             get
             {
-                if (_obj is null)
+                if (_object is null)
                 {
                     return null;
                 }
 
-                var type = _obj as Type;
-                if (type != null) return type;
+                var type = _object as Type;
+                if (type != null)
+                {
+                    return type;
+                }
 
-                if (_obj is TypeFlag typeFlag)
+                if (_object is TypeFlag typeFlag)
                 {
                     return typeFlag.Type;
                 }
 
-                type = _obj.GetType();
+                type = _object.GetType();
 
-                if (type == typeof(byte[])) return typeof(string);
-                if (type == typeof(object))
+                if (type == typeof(byte[]))
                 {
-                    if (_obj == NullInt32) return typeof(int?);
+                    return typeof(string);
                 }
 
                 if (type == typeof(TypeBox))
@@ -65,30 +62,27 @@ namespace ValuePrototype
         public ValueCompactFast(int value)
         {
             this = default;
-            _obj = Int32;
+            _object = TypeFlags.Int32;
             _union.Int32 = value;
         }
 
-        public static implicit operator ValueCompactFast(int value) => new(value);
-        public static explicit operator int(ValueCompactFast variant) => variant.As<int>();
-        #endregion
-
-        #region Nullable<Int32>
         public ValueCompactFast(int? value)
         {
             this = default;
             if (value.HasValue)
             {
-                _obj = typeof(int?);
+                _object = typeof(int?);
                 _union.Int32 = value.Value;
             }
             else
             {
-                _obj = NullInt32;
+                _object = TypeFlags.NullInt32;
                 _union = default;
             }
         }
 
+        public static implicit operator ValueCompactFast(int value) => new(value);
+        public static explicit operator int(ValueCompactFast variant) => variant.As<int>();
         public static implicit operator ValueCompactFast(int? value) => new(value);
         public static explicit operator int?(ValueCompactFast variant) => variant.As<int?>();
         #endregion
@@ -97,83 +91,114 @@ namespace ValuePrototype
         public ValueCompactFast(long value)
         {
             this = default;
-            _obj = Int64;
+            _object = TypeFlags.Int64;
             _union.Int64 = value;
         }
 
-        public static implicit operator ValueCompactFast(long value) => new(value);
-        public static explicit operator long(ValueCompactFast variant) => variant.As<long>();
-        #endregion
-
-        #region Nullable<Int64>
         public ValueCompactFast(long? value)
         {
             this = default;
             if (value.HasValue)
             {
-                _obj = typeof(long?);
+                _object = typeof(long?);
                 _union.Int64 = value.Value;
             }
             else
             {
-                _obj = NullInt64;
+                _object = TypeFlags.NullInt64;
                 _union = default;
             }
         }
 
+        public static implicit operator ValueCompactFast(long value) => new(value);
+        public static explicit operator long(ValueCompactFast variant) => variant.As<long>();
         public static implicit operator ValueCompactFast(long? value) => new(value);
-        public static explicit operator long?(ValueCompactFast variant) => variant.As<long?>();
+        public static explicit operator long?(ValueCompactFast value) => value.As<long?>();
+        #endregion
+
+        #region Single
+        public ValueCompactFast(float value)
+        {
+            this = default;
+            _object = TypeFlags.Single;
+            _union.Single = value;
+        }
+
+        public ValueCompactFast(float? value)
+        {
+            this = default;
+            if (value.HasValue)
+            {
+                _object = typeof(float?);
+                _union.Single = value.Value;
+            }
+            else
+            {
+                _object = TypeFlags.NullSingle;
+                _union = default;
+            }
+        }
+
+        public static implicit operator ValueCompactFast(float value) => new(value);
+        public static explicit operator float(ValueCompactFast value) => value.As<float>();
+        public static implicit operator ValueCompactFast(float? value) => new(value);
+        public static explicit operator float?(ValueCompactFast value) => value.As<float?>();
         #endregion
 
         #region Double
         public ValueCompactFast(double value)
         {
             this = default;
-            _obj = typeof(double);
+            _object = TypeFlags.Double;
             _union.Double = value;
         }
 
-        public static implicit operator ValueCompactFast(double value)
+        public ValueCompactFast(double? value)
         {
-            return new ValueCompactFast(value);
+            this = default;
+            if (value.HasValue)
+            {
+                _object = typeof(double?);
+                _union.Double = value.Value;
+            }
+            else
+            {
+                _object = TypeFlags.NullDouble;
+                _union = default;
+            }
         }
 
-        public static explicit operator double(ValueCompactFast variant)
-        {
-            if (variant._obj is null || !variant._obj.Equals(typeof(double))) ThrowInvalidCast();
-            var representation = variant._union;
-            return representation.Double;
-        }
+        public static implicit operator ValueCompactFast(double value) => new(value);
+        public static explicit operator double(ValueCompactFast value) => value.As<double>();
+        public static implicit operator ValueCompactFast(double? value) => new(value);
+        public static explicit operator double?(ValueCompactFast value) => value.As<double?>();
         #endregion
 
         #region String
         public ValueCompactFast(string value)
         {
-            _obj = value;
+            _object = value;
             _union = default;
         }
 
-        public static implicit operator ValueCompactFast(string value)
-        {
-            return new ValueCompactFast(value);
-        }
+        public static implicit operator ValueCompactFast(string value) => new(value);
 
         public ValueCompactFast(byte[] utf8, int index, int count)
         {
             this = default;
-            _obj = utf8;
+            _object = utf8;
             _union.Segment = (index, count);
         }
 
-        public static explicit operator string(ValueCompactFast variant)
+        public static explicit operator string(ValueCompactFast value)
         {
-            var str = variant._obj as string;
+            var str = value._object as string;
             if (str != null) return str;
 
-            var utf8 = variant._obj as byte[];
+            var utf8 = value._object as byte[];
             if (utf8 != null)
             {
-                var segment = variant._union.Segment;
+                var segment = value._union.Segment;
                 var decoded = Encoding.UTF8.GetString(utf8, segment.Index, segment.Count);
                 return decoded;
             }
@@ -189,27 +214,24 @@ namespace ValuePrototype
             if (value.Offset.Ticks == 0)
             {
                 _union.Ticks = value.Ticks;
-                _obj = typeof(DateTimeOffset);
+                _object = typeof(DateTimeOffset);
             }
             else
             {
-                _obj = value;
+                _object = value;
             }
         }
 
-        public static implicit operator ValueCompactFast(DateTimeOffset value)
-        {
-            return new ValueCompactFast(value);
-        }
+        public static implicit operator ValueCompactFast(DateTimeOffset value) => new(value);
 
         public static explicit operator DateTimeOffset(ValueCompactFast variant)
         {
-            if (variant._obj?.Equals(typeof(DateTimeOffset)) == true)
+            if (variant._object?.Equals(typeof(DateTimeOffset)) == true)
             {
                 return new DateTimeOffset(variant._union.Ticks, TimeSpan.Zero);
             }
 
-            if (variant._obj is DateTimeOffset dto)
+            if (variant._object is DateTimeOffset dto)
             {
                 return dto;
             }
@@ -225,27 +247,24 @@ namespace ValuePrototype
             if (value.Kind == DateTimeKind.Utc)
             {
                 _union.Ticks = value.Ticks;
-                _obj = typeof(DateTime);
+                _object = typeof(DateTime);
             }
             else
             {
-                _obj = value;
+                _object = value;
             }
         }
 
-        public static implicit operator ValueCompactFast(DateTime value)
-        {
-            return new ValueCompactFast(value);
-        }
+        public static implicit operator ValueCompactFast(DateTime value) => new(value);
 
-        public static explicit operator DateTime(ValueCompactFast variant)
+        public static explicit operator DateTime(ValueCompactFast value)
         {
-            if (variant._obj?.Equals(typeof(DateTime)) == true)
+            if (value._object?.Equals(typeof(DateTime)) == true)
             {
-                return new DateTime(variant._union.Ticks, DateTimeKind.Utc);
+                return new DateTime(value._union.Ticks, DateTimeKind.Utc);
             }
 
-            if (variant._obj is DateTime dto)
+            if (value._object is DateTime dto)
             {
                 return dto;
             }
@@ -257,24 +276,12 @@ namespace ValuePrototype
         #region Decimal
         public ValueCompactFast(decimal value)
         {
-            _obj = value;
+            _object = value;
             _union = default;
         }
 
-        public static implicit operator ValueCompactFast(decimal value)
-        {
-            return new ValueCompactFast(value);
-        }
-
-        public static explicit operator decimal(ValueCompactFast variant)
-        {
-            if (variant._obj is decimal value)
-            {
-                return value;
-            }
-
-            throw new InvalidCastException();
-        }
+        public static implicit operator ValueCompactFast(decimal value) => new(value);
+        public static explicit operator decimal(ValueCompactFast value) => value.As<decimal>();
         #endregion
 
         #region T
@@ -298,19 +305,19 @@ namespace ValuePrototype
             bool success;
 
             // Checking the type gets all of the non-relevant compares elided by the JIT
-            if (_obj is not null && ((typeof(T) == typeof(bool) && _obj == typeof(bool))
-                || (typeof(T) == typeof(byte) && _obj == typeof(byte))
-                || (typeof(T) == typeof(char) && _obj == typeof(char))
-                || (typeof(T) == typeof(decimal) && _obj == typeof(decimal))
-                || (typeof(T) == typeof(double) && _obj == typeof(double))
-                || (typeof(T) == typeof(short) && _obj == typeof(short))
-                || (typeof(T) == typeof(int) && _obj == Int32)
-                || (typeof(T) == typeof(long) && _obj == Int64)
-                || (typeof(T) == typeof(sbyte) && _obj == typeof(sbyte))
-                || (typeof(T) == typeof(float) && _obj == typeof(float))
-                || (typeof(T) == typeof(ushort) && _obj == typeof(ushort))
-                || (typeof(T) == typeof(uint) && _obj == typeof(uint))
-                || (typeof(T) == typeof(ulong) && _obj == typeof(ulong))))
+            if (_object is not null && ((typeof(T) == typeof(bool) && _object == TypeFlags.Boolean)
+                || (typeof(T) == typeof(byte) && _object == TypeFlags.Byte)
+                || (typeof(T) == typeof(char) && _object == TypeFlags.Char)
+                || (typeof(T) == typeof(decimal) && _object == TypeFlags.Decimal)
+                || (typeof(T) == typeof(double) && _object == TypeFlags.Double)
+                || (typeof(T) == typeof(short) && _object == TypeFlags.Int16)
+                || (typeof(T) == typeof(int) && _object == TypeFlags.Int32)
+                || (typeof(T) == typeof(long) && _object == TypeFlags.Int64)
+                || (typeof(T) == typeof(sbyte) && _object == TypeFlags.SByte)
+                || (typeof(T) == typeof(float) && _object == TypeFlags.Single)
+                || (typeof(T) == typeof(ushort) && _object == TypeFlags.UInt16)
+                || (typeof(T) == typeof(uint) && _object == TypeFlags.UInt32)
+                || (typeof(T) == typeof(ulong) && _object == TypeFlags.UInt64)))
             {
                 value = CastTo<T>();
                 success = true;
@@ -325,61 +332,188 @@ namespace ValuePrototype
 
         private bool TryGetSlow<T>(out T value)
         {
-            if (_obj is null)
+            if (_object is null)
             {
                 // A null is stored, it can only be assigned to a reference type.
                 value = default!;
                 return !typeof(T).IsValueType;
             }
 
-            Type objectType = _obj.GetType();
+            Type objectType = _object.GetType();
 
             if (objectType == typeof(T) || typeof(T).IsAssignableFrom(objectType))
             {
                 // Same, or assignable.
-                value = (T)_obj;
+                value = (T)_object;
                 return true;
             }
 
             if (Nullable.GetUnderlyingType(typeof(T)) is Type nullableType)
             {
-                // Requested a nullable, see if we have a the underlying type.
+                // Requested a nullable, see if we have a the underlying type or null token.
 
                 // TODO: Is there any way to do this with one cast for all types?
-                if (nullableType == typeof(int) && _obj == Int32)
+                if (nullableType == typeof(int))
                 {
-                    value = Unsafe.As<int?, T>(ref Unsafe.AsRef((int?)_union.Int32));
-                    return true;
+                    if (_object == TypeFlags.Int32 || _object == typeof(int?))
+                    {
+                        value = Unsafe.As<int?, T>(ref Unsafe.AsRef((int?)_union.Int32));
+                        return true;
+                    }
+                    else if (_object == TypeFlags.NullInt32)
+                    {
+                        value = Unsafe.As<int?, T>(ref Unsafe.AsRef((int?)null));
+                        return true;
+                    }
                 }
 
-                if (nullableType == typeof(long) && _obj == Int64)
+                if (nullableType == typeof(long))
                 {
-                    value = Unsafe.As<long?, T>(ref Unsafe.AsRef((long?)_union.Int64));
-                    return true;
+                    if (_object == TypeFlags.Int64 || _object == typeof(long?))
+                    {
+                        value = Unsafe.As<long?, T>(ref Unsafe.AsRef((long?)_union.Int64));
+                        return true;
+                    }
+                    else if (_object == TypeFlags.NullInt64)
+                    {
+                        value = Unsafe.As<long?, T>(ref Unsafe.AsRef((long?)null));
+                        return true;
+                    }
+                }
+
+                if (nullableType == typeof(bool))
+                {
+                    if (_object == TypeFlags.Boolean || _object == typeof(bool?))
+                    {
+                        value = Unsafe.As<bool?, T>(ref Unsafe.AsRef((bool?)_union.Boolean));
+                        return true;
+                    }
+                    else if (_object == TypeFlags.NullBoolean)
+                    {
+                        value = Unsafe.As<bool?, T>(ref Unsafe.AsRef((bool?)null));
+                        return true;
+                    }
+                }
+
+                if (nullableType == typeof(float))
+                {
+                    if (_object == TypeFlags.Single || _object == typeof(float?))
+                    {
+                        value = Unsafe.As<float?, T>(ref Unsafe.AsRef((float?)_union.Single));
+                        return true;
+                    }
+                    else if (_object == TypeFlags.NullSingle)
+                    {
+                        value = Unsafe.As<float?, T>(ref Unsafe.AsRef((float?)null));
+                        return true;
+                    }
+                }
+
+                if (nullableType == typeof(double))
+                {
+                    if (_object == TypeFlags.Double || _object == typeof(double?))
+                    {
+                        value = Unsafe.As<double?, T>(ref Unsafe.AsRef((double?)_union.Double));
+                        return true;
+                    }
+                    else if (_object == TypeFlags.NullDouble)
+                    {
+                        value = Unsafe.As<double?, T>(ref Unsafe.AsRef((double?)null));
+                        return true;
+                    }
+                }
+
+                if (nullableType == typeof(uint))
+                {
+                    if (_object == TypeFlags.UInt32 || _object == typeof(uint?))
+                    {
+                        value = Unsafe.As<uint?, T>(ref Unsafe.AsRef((uint?)_union.UInt32));
+                        return true;
+                    }
+                    else if (_object == TypeFlags.NullUInt32)
+                    {
+                        value = Unsafe.As<uint?, T>(ref Unsafe.AsRef((uint?)null));
+                        return true;
+                    }
+                }
+
+                if (nullableType == typeof(ulong))
+                {
+                    if (_object == TypeFlags.UInt64 || _object == typeof(ulong?))
+                    {
+                        value = Unsafe.As<ulong?, T>(ref Unsafe.AsRef((ulong?)_union.UInt64));
+                        return true;
+                    }
+                    else if (_object == TypeFlags.NullUInt64)
+                    {
+                        value = Unsafe.As<ulong?, T>(ref Unsafe.AsRef((ulong?)null));
+                        return true;
+                    }
+                }
+
+                if (nullableType == typeof(char))
+                {
+                    if (_object == TypeFlags.Char || _object == typeof(char?))
+                    {
+                        value = Unsafe.As<char?, T>(ref Unsafe.AsRef((char?)_union.Char));
+                        return true;
+                    }
+                    else if (_object == TypeFlags.NullChar)
+                    {
+                        value = Unsafe.As<char?, T>(ref Unsafe.AsRef((char?)null));
+                        return true;
+                    }
+                }
+
+                if (nullableType == typeof(short))
+                {
+                    if (_object == TypeFlags.Int16 || _object == typeof(short?))
+                    {
+                        value = Unsafe.As<short?, T>(ref Unsafe.AsRef((short?)_union.Int16));
+                        return true;
+                    }
+                    else if (_object == TypeFlags.NullInt16)
+                    {
+                        value = Unsafe.As<short?, T>(ref Unsafe.AsRef((short?)null));
+                        return true;
+                    }
+                }
+
+                if (nullableType == typeof(ushort))
+                {
+                    if (_object == TypeFlags.UInt16 || _object == typeof(ushort?))
+                    {
+                        value = Unsafe.As<ushort?, T>(ref Unsafe.AsRef((ushort?)_union.UInt16));
+                        return true;
+                    }
+                    else if (_object == TypeFlags.NullUInt16)
+                    {
+                        value = Unsafe.As<ushort?, T>(ref Unsafe.AsRef((ushort?)null));
+                        return true;
+                    }
                 }
             }
 
-            if ((typeof(T) == typeof(bool) && _obj == typeof(bool?))
-                || (typeof(T) == typeof(byte) && _obj == typeof(byte?))
-                || (typeof(T) == typeof(char) && _obj == typeof(char?))
-                || (typeof(T) == typeof(decimal) && _obj == typeof(decimal?))
-                || (typeof(T) == typeof(double) && _obj == typeof(double?))
-                || (typeof(T) == typeof(short) && _obj == typeof(short?))
-                || (typeof(T) == typeof(int) && _obj == typeof(int?))
-                || (typeof(T) == typeof(long) && _obj == typeof(long?))
-                || (typeof(T) == typeof(sbyte) && _obj == typeof(sbyte?))
-                || (typeof(T) == typeof(float) && _obj == typeof(float?))
-                || (typeof(T) == typeof(ushort) && _obj == typeof(ushort?))
-                || (typeof(T) == typeof(uint) && _obj == typeof(uint?))
-                || (typeof(T) == typeof(ulong) && _obj == typeof(ulong?)))
+            if ((typeof(T) == typeof(bool) && _object == typeof(bool?))
+                || (typeof(T) == typeof(byte) && _object == typeof(byte?))
+                || (typeof(T) == typeof(char) && _object == typeof(char?))
+                //|| (typeof(T) == typeof(decimal) && _object == typeof(decimal?))
+                || (typeof(T) == typeof(double) && _object == typeof(double?))
+                || (typeof(T) == typeof(short) && _object == typeof(short?))
+                || (typeof(T) == typeof(int) && _object == typeof(int?))
+                || (typeof(T) == typeof(long) && _object == typeof(long?))
+                || (typeof(T) == typeof(sbyte) && _object == typeof(sbyte?))
+                || (typeof(T) == typeof(float) && _object == typeof(float?))
+                || (typeof(T) == typeof(ushort) && _object == typeof(ushort?))
+                || (typeof(T) == typeof(uint) && _object == typeof(uint?))
+                || (typeof(T) == typeof(ulong) && _object == typeof(ulong?)))
             {
-                // Value is nullable
+                // We have a nullable with the requested underlying type.
                 value = CastTo<T>();
                 return true;
             }
 
-
-            if (typeof(T) == typeof(Type) && _obj is TypeBox box)
+            if (typeof(T) == typeof(Type) && _object is TypeBox box)
             {
                 // The value was actually a Type object.
                 value = (T)(object)box.Value;
