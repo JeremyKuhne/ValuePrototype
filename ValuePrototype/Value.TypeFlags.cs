@@ -22,8 +22,8 @@
             internal static readonly TypeFlag NullUInt32 = new(typeof(uint?));
             internal static readonly TypeFlag Int64 = new(typeof(long));
             internal static readonly TypeFlag NullInt64 = new(typeof(long?));
-            internal static readonly TypeFlag UInt64 = new(typeof(long));
-            internal static readonly TypeFlag NullUInt64 = new(typeof(long?));
+            internal static readonly TypeFlag UInt64 = new(typeof(ulong));
+            internal static readonly TypeFlag NullUInt64 = new(typeof(ulong?));
             internal static readonly TypeFlag Single = new(typeof(float));
             internal static readonly TypeFlag NullSingle = new(typeof(float?));
             internal static readonly TypeFlag Double = new(typeof(double));

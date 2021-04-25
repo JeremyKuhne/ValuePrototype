@@ -58,6 +58,151 @@ namespace ValuePrototype
         private static void ThrowInvalidCast() => throw new InvalidCastException();
         private static void ThrowNotImplemented() => throw new NotImplementedException();
 
+        #region Byte
+        public Value(byte value)
+        {
+            this = default;
+            _object = TypeFlags.Byte;
+            _union.Byte = value;
+        }
+
+        public Value(byte? value)
+        {
+            this = default;
+            if (value.HasValue)
+            {
+                _object = typeof(byte?);
+                _union.Byte = value.Value;
+            }
+            else
+            {
+                _object = TypeFlags.NullByte;
+                _union = default;
+            }
+        }
+
+        public static implicit operator Value(byte value) => new(value);
+        public static explicit operator byte(Value value) => value.As<byte>();
+        public static implicit operator Value(byte? value) => new(value);
+        public static explicit operator byte?(Value value) => value.As<byte?>();
+        #endregion
+
+        #region SByte
+        public Value(sbyte value)
+        {
+            this = default;
+            _object = TypeFlags.SByte;
+            _union.SByte = value;
+        }
+
+        public Value(sbyte? value)
+        {
+            this = default;
+            if (value.HasValue)
+            {
+                _object = typeof(sbyte?);
+                _union.SByte = value.Value;
+            }
+            else
+            {
+                _object = TypeFlags.NullSByte;
+                _union = default;
+            }
+        }
+
+        public static implicit operator Value(sbyte value) => new(value);
+        public static explicit operator sbyte(Value value) => value.As<sbyte>();
+        public static implicit operator Value(sbyte? value) => new(value);
+        public static explicit operator sbyte?(Value value) => value.As<sbyte?>();
+        #endregion
+
+        #region Boolean
+        public Value(bool value)
+        {
+            this = default;
+            _object = TypeFlags.Boolean;
+            _union.Boolean = value;
+        }
+
+        public Value(bool? value)
+        {
+            this = default;
+            if (value.HasValue)
+            {
+                _object = typeof(bool?);
+                _union.Boolean = value.Value;
+            }
+            else
+            {
+                _object = TypeFlags.NullBoolean;
+                _union = default;
+            }
+        }
+
+        public static implicit operator Value(bool value) => new(value);
+        public static explicit operator bool(Value value) => value.As<bool>();
+        public static implicit operator Value(bool? value) => new(value);
+        public static explicit operator bool?(Value value) => value.As<bool?>();
+        #endregion
+
+        #region Char
+        public Value(char value)
+        {
+            this = default;
+            _object = TypeFlags.Char;
+            _union.Char = value;
+        }
+
+        public Value(char? value)
+        {
+            this = default;
+            if (value.HasValue)
+            {
+                _object = typeof(char?);
+                _union.Char = value.Value;
+            }
+            else
+            {
+                _object = TypeFlags.NullChar;
+                _union = default;
+            }
+        }
+
+        public static implicit operator Value(char value) => new(value);
+        public static explicit operator char(Value value) => value.As<char>();
+        public static implicit operator Value(char? value) => new(value);
+        public static explicit operator char?(Value value) => value.As<char?>();
+        #endregion
+
+        #region Int16
+        public Value(short value)
+        {
+            this = default;
+            _object = TypeFlags.Int16;
+            _union.Int16 = value;
+        }
+
+        public Value(short? value)
+        {
+            this = default;
+            if (value.HasValue)
+            {
+                _object = typeof(short?);
+                _union.Int32 = value.Value;
+            }
+            else
+            {
+                _object = TypeFlags.NullInt16;
+                _union = default;
+            }
+        }
+
+        public static implicit operator Value(short value) => new(value);
+        public static explicit operator short(Value value) => value.As<short>();
+        public static implicit operator Value(short? value) => new(value);
+        public static explicit operator short?(Value value) => value.As<short?>();
+        #endregion
+
         #region Int32
         public Value(int value)
         {
@@ -82,9 +227,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(int value) => new(value);
-        public static explicit operator int(Value variant) => variant.As<int>();
+        public static explicit operator int(Value value) => value.As<int>();
         public static implicit operator Value(int? value) => new(value);
-        public static explicit operator int?(Value variant) => variant.As<int?>();
+        public static explicit operator int?(Value value) => value.As<int?>();
         #endregion
 
         #region Int64
@@ -111,9 +256,96 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(long value) => new(value);
-        public static explicit operator long(Value variant) => variant.As<long>();
+        public static explicit operator long(Value value) => value.As<long>();
         public static implicit operator Value(long? value) => new(value);
         public static explicit operator long?(Value value) => value.As<long?>();
+        #endregion
+
+        #region UInt16
+        public Value(ushort value)
+        {
+            this = default;
+            _object = TypeFlags.UInt16;
+            _union.UInt16 = value;
+        }
+
+        public Value(ushort? value)
+        {
+            this = default;
+            if (value.HasValue)
+            {
+                _object = typeof(ushort?);
+                _union.UInt16 = value.Value;
+            }
+            else
+            {
+                _object = TypeFlags.NullUInt16;
+                _union = default;
+            }
+        }
+
+        public static implicit operator Value(ushort value) => new(value);
+        public static explicit operator ushort(Value value) => value.As<ushort>();
+        public static implicit operator Value(ushort? value) => new(value);
+        public static explicit operator ushort?(Value value) => value.As<ushort?>();
+        #endregion
+
+        #region UInt32
+        public Value(uint value)
+        {
+            this = default;
+            _object = TypeFlags.UInt32;
+            _union.UInt32 = value;
+        }
+
+        public Value(uint? value)
+        {
+            this = default;
+            if (value.HasValue)
+            {
+                _object = typeof(uint?);
+                _union.UInt32 = value.Value;
+            }
+            else
+            {
+                _object = TypeFlags.NullUInt32;
+                _union = default;
+            }
+        }
+
+        public static implicit operator Value(uint value) => new(value);
+        public static explicit operator uint(Value value) => value.As<uint>();
+        public static implicit operator Value(uint? value) => new(value);
+        public static explicit operator uint?(Value value) => value.As<uint?>();
+        #endregion
+
+        #region UInt64
+        public Value(ulong value)
+        {
+            this = default;
+            _object = TypeFlags.UInt64;
+            _union.UInt64 = value;
+        }
+
+        public Value(ulong? value)
+        {
+            this = default;
+            if (value.HasValue)
+            {
+                _object = typeof(ulong?);
+                _union.UInt64 = value.Value;
+            }
+            else
+            {
+                _object = TypeFlags.NullUInt64;
+                _union = default;
+            }
+        }
+
+        public static implicit operator Value(ulong value) => new(value);
+        public static explicit operator ulong(Value value) => value.As<ulong>();
+        public static implicit operator Value(ulong? value) => new(value);
+        public static explicit operator ulong?(Value value) => value.As<ulong?>();
         #endregion
 
         #region Single
@@ -224,14 +456,14 @@ namespace ValuePrototype
 
         public static implicit operator Value(DateTimeOffset value) => new(value);
 
-        public static explicit operator DateTimeOffset(Value variant)
+        public static explicit operator DateTimeOffset(Value value)
         {
-            if (variant._object?.Equals(typeof(DateTimeOffset)) == true)
+            if (value._object?.Equals(typeof(DateTimeOffset)) == true)
             {
-                return new DateTimeOffset(variant._union.Ticks, TimeSpan.Zero);
+                return new DateTimeOffset(value._union.Ticks, TimeSpan.Zero);
             }
 
-            if (variant._object is DateTimeOffset dto)
+            if (value._object is DateTimeOffset dto)
             {
                 return dto;
             }
@@ -492,6 +724,35 @@ namespace ValuePrototype
                         return true;
                     }
                 }
+
+                if (nullableType == typeof(byte))
+                {
+                    if (_object == TypeFlags.Byte || _object == typeof(byte?))
+                    {
+                        value = Unsafe.As<byte?, T>(ref Unsafe.AsRef((byte?)_union.Byte));
+                        return true;
+                    }
+                    else if (_object == TypeFlags.NullByte)
+                    {
+                        value = Unsafe.As<byte?, T>(ref Unsafe.AsRef((byte?)null));
+                        return true;
+                    }
+                }
+
+                if (nullableType == typeof(sbyte))
+                {
+                    if (_object == TypeFlags.SByte || _object == typeof(sbyte?))
+                    {
+                        value = Unsafe.As<sbyte?, T>(ref Unsafe.AsRef((sbyte?)_union.SByte));
+                        return true;
+                    }
+                    else if (_object == TypeFlags.NullSByte)
+                    {
+                        value = Unsafe.As<sbyte?, T>(ref Unsafe.AsRef((sbyte?)null));
+                        return true;
+                    }
+                }
+
             }
 
             if ((typeof(T) == typeof(bool) && _object == typeof(bool?))

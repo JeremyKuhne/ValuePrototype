@@ -6,11 +6,12 @@ Wrapping arbitrary values without boxing of common types.
 ### Goals
 
 - Take any value, including null
-- Do not box any primitive types (`int`, `float`, etc.)
+- Fit into 64bits of data and an object field (128bits total on x64)
+- Do not box any primitive types (`int`, `float`, etc.) [Except for `Decimal`]
 - Optimize performance for primitive type storage/retrieval
 - Expose `Type` of wrapped type (or `null` for null)
 - Allow retrieving as any type that is `AssignableFrom`
-- Support nullable intrinsics without boxing (`int?`, `float?`, etc.)
+- Support nullable intrinsics without boxing (`int?`, `float?`, etc.) [Except for `Decimal`]
 - Allow intrinsic to/from nullable intrinsic (except no value to intrinsic)
 
 #### Additional special support

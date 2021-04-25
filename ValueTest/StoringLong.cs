@@ -20,6 +20,7 @@ namespace ValueTest
 
         [Theory]
         [InlineData(42)]
+        [InlineData(long.MinValue)]
         [InlineData(long.MaxValue)]
         public void LongInOut(long @long)
         {
@@ -34,6 +35,7 @@ namespace ValueTest
 
         [Theory]
         [InlineData(42)]
+        [InlineData(long.MinValue)]
         [InlineData(long.MaxValue)]
         public void NullableLongInLongOut(long? @long)
         {
@@ -51,6 +53,7 @@ namespace ValueTest
 
         [Theory]
         [InlineData(42)]
+        [InlineData(long.MinValue)]
         [InlineData(long.MaxValue)]
         public void LongInNullableLongOut(long @long)
         {

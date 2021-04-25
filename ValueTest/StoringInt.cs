@@ -50,6 +50,16 @@ namespace ValueTest
         }
 
         [Fact]
+        public void NullInt()
+        {
+            int? source = null;
+            Value value = source;
+            Assert.Equal(typeof(int?), value.Type);
+            Assert.Equal(source, value.As<int?>());
+            Assert.False(value.As<int?>().HasValue);
+        }
+
+        [Fact]
         public void TypeAssertions()
         {
             byte b = default;
