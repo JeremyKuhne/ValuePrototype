@@ -263,8 +263,9 @@ namespace ValuePrototype
             this = default;
             if (value.Offset.Ticks == 0)
             {
+                // This is a UTC time
                 _union.Ticks = value.Ticks;
-                _object = typeof(DateTimeOffset);
+                _object = TypeFlags.DateTimeOffset;
             }
             else
             {
@@ -273,21 +274,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(DateTimeOffset value) => new(value);
-
-        public static explicit operator DateTimeOffset(Value value)
-        {
-            if (value._object?.Equals(typeof(DateTimeOffset)) == true)
-            {
-                return new DateTimeOffset(value._union.Ticks, TimeSpan.Zero);
-            }
-
-            if (value._object is DateTimeOffset dto)
-            {
-                return dto;
-            }
-
-            throw new InvalidCastException();
-        }
+        public static explicit operator DateTimeOffset(Value value) => value.As<DateTimeOffset>();
+        public static implicit operator Value(DateTimeOffset? value) => value.HasValue ? new(value.Value) : new(value);
+        public static explicit operator DateTimeOffset?(Value value) => value.As<DateTimeOffset?>();
         #endregion
 
         #region DateTime
@@ -297,7 +286,7 @@ namespace ValuePrototype
             if (value.Kind == DateTimeKind.Utc)
             {
                 _union.Ticks = value.Ticks;
-                _object = typeof(DateTime);
+                _object = TypeFlags.DateTime;
             }
             else
             {
@@ -306,21 +295,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(DateTime value) => new(value);
-
-        public static explicit operator DateTime(Value value)
-        {
-            if (value._object?.Equals(typeof(DateTime)) == true)
-            {
-                return new DateTime(value._union.Ticks, DateTimeKind.Utc);
-            }
-
-            if (value._object is DateTime dto)
-            {
-                return dto;
-            }
-
-            throw new InvalidCastException();
-        }
+        public static explicit operator DateTime(Value value) => value.As<DateTime>();
+        public static implicit operator Value(DateTime? value) => value.HasValue ? new(value.Value) : new(value);
+        public static explicit operator DateTime?(Value value) => value.As<DateTime?>();
         #endregion
 
         #region Decimal
@@ -371,6 +348,16 @@ namespace ValuePrototype
                 || (typeof(T) == typeof(ulong) && _object == TypeFlags.UInt64)))
             {
                 value = CastTo<T>();
+                success = true;
+            }
+            else if (typeof(T) == typeof(DateTime) && _object == TypeFlags.DateTime)
+            {
+                value = Unsafe.As<DateTime, T>(ref Unsafe.AsRef(new DateTime(_union.Ticks, DateTimeKind.Utc)));
+                success = true;
+            }
+            else if (typeof(T) == typeof(DateTimeOffset) && _object == TypeFlags.DateTimeOffset)
+            {
+                value = Unsafe.As<DateTimeOffset, T>(ref Unsafe.AsRef(new DateTimeOffset(_union.Ticks, TimeSpan.Zero)));
                 success = true;
             }
             else
@@ -476,6 +463,17 @@ namespace ValuePrototype
                     return true;
                 }
 
+                if (nullableType == typeof(DateTime) && _object == TypeFlags.DateTime)
+                {
+                    value = Unsafe.As<DateTime?, T>(ref Unsafe.AsRef((DateTime?)new DateTime(_union.Ticks, DateTimeKind.Utc)));
+                    return true;
+                }
+
+                if (nullableType == typeof(DateTimeOffset) && _object == TypeFlags.DateTimeOffset)
+                {
+                    value = Unsafe.As<DateTimeOffset?, T>(ref Unsafe.AsRef((DateTimeOffset?)new DateTimeOffset(_union.Ticks, TimeSpan.Zero)));
+                    return true;
+                }
             }
 
             if (typeof(T) == typeof(Type) && _object is TypeBox box)

@@ -1,4 +1,6 @@
-﻿namespace ValuePrototype
+﻿using System;
+
+namespace ValuePrototype
 {
     public readonly partial struct Value
     {
@@ -16,6 +18,8 @@
             internal static readonly TypeFlag UInt64 = new(typeof(ulong));
             internal static readonly TypeFlag Single = new(typeof(float));
             internal static readonly TypeFlag Double = new(typeof(double));
+            internal static readonly TypeFlag DateTime = new(typeof(DateTime));
+            internal static readonly TypeFlag DateTimeOffset = new(typeof(DateTimeOffset));
         }
     }
 }
