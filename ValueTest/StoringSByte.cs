@@ -15,7 +15,7 @@ namespace ValueTest
             sbyte? source = 42;
             value = source;
             Assert.Equal(source, value.As<sbyte?>());
-            Assert.Equal(typeof(sbyte?), value.Type);
+            Assert.Equal(typeof(sbyte), value.Type);
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace ValueTest
         {
             sbyte? source = null;
             Value value = source;
-            Assert.Equal(typeof(sbyte?), value.Type);
+            Assert.Null(value.Type);
             Assert.Equal(source, value.As<sbyte?>());
             Assert.False(value.As<sbyte?>().HasValue);
         }

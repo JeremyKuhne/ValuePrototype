@@ -15,7 +15,7 @@ namespace ValueTest
             ulong? source = 42;
             value = source;
             Assert.Equal(source, value.As<ulong?>());
-            Assert.Equal(typeof(ulong?), value.Type);
+            Assert.Equal(typeof(ulong), value.Type);
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace ValueTest
         {
             ulong? source = null;
             Value value = source;
-            Assert.Equal(typeof(ulong?), value.Type);
+            Assert.Null(value.Type);
             Assert.Equal(source, value.As<ulong?>());
             Assert.False(value.As<ulong?>().HasValue);
         }

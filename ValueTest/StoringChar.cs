@@ -15,7 +15,7 @@ namespace ValueTest
             char? source = '!';
             value = source;
             Assert.Equal(source, value.As<char?>());
-            Assert.Equal(typeof(char?), value.Type);
+            Assert.Equal(typeof(char), value.Type);
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace ValueTest
         {
             char? source = null;
             Value value = source;
-            Assert.Equal(typeof(char?), value.Type);
+            Assert.Null(value.Type);
             Assert.Equal(source, value.As<char?>());
             Assert.False(value.As<char?>().HasValue);
         }

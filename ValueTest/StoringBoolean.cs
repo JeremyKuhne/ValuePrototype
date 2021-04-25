@@ -15,7 +15,7 @@ namespace ValueTest
             bool? source = true;
             value = source;
             Assert.Equal(source, value.As<bool?>());
-            Assert.Equal(typeof(bool?), value.Type);
+            Assert.Equal(typeof(bool), value.Type);
         }
 
         [Theory]
@@ -68,7 +68,7 @@ namespace ValueTest
         {
             bool? source = null;
             Value value = source;
-            Assert.Equal(typeof(bool?), value.Type);
+            Assert.Null(value.Type);
             Assert.Equal(source, value.As<bool?>());
             Assert.False(value.As<bool?>().HasValue);
         }

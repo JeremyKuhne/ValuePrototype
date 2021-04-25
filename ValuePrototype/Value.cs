@@ -66,24 +66,9 @@ namespace ValuePrototype
             _union.Byte = value;
         }
 
-        public Value(byte? value)
-        {
-            this = default;
-            if (value.HasValue)
-            {
-                _object = typeof(byte?);
-                _union.Byte = value.Value;
-            }
-            else
-            {
-                _object = TypeFlags.NullByte;
-                _union = default;
-            }
-        }
-
         public static implicit operator Value(byte value) => new(value);
         public static explicit operator byte(Value value) => value.As<byte>();
-        public static implicit operator Value(byte? value) => new(value);
+        public static implicit operator Value(byte? value) => value.HasValue ? new(value.Value) : new(value);
         public static explicit operator byte?(Value value) => value.As<byte?>();
         #endregion
 
@@ -95,24 +80,9 @@ namespace ValuePrototype
             _union.SByte = value;
         }
 
-        public Value(sbyte? value)
-        {
-            this = default;
-            if (value.HasValue)
-            {
-                _object = typeof(sbyte?);
-                _union.SByte = value.Value;
-            }
-            else
-            {
-                _object = TypeFlags.NullSByte;
-                _union = default;
-            }
-        }
-
         public static implicit operator Value(sbyte value) => new(value);
         public static explicit operator sbyte(Value value) => value.As<sbyte>();
-        public static implicit operator Value(sbyte? value) => new(value);
+        public static implicit operator Value(sbyte? value) => value.HasValue ? new(value.Value) : new(value);
         public static explicit operator sbyte?(Value value) => value.As<sbyte?>();
         #endregion
 
@@ -124,24 +94,9 @@ namespace ValuePrototype
             _union.Boolean = value;
         }
 
-        public Value(bool? value)
-        {
-            this = default;
-            if (value.HasValue)
-            {
-                _object = typeof(bool?);
-                _union.Boolean = value.Value;
-            }
-            else
-            {
-                _object = TypeFlags.NullBoolean;
-                _union = default;
-            }
-        }
-
         public static implicit operator Value(bool value) => new(value);
         public static explicit operator bool(Value value) => value.As<bool>();
-        public static implicit operator Value(bool? value) => new(value);
+        public static implicit operator Value(bool? value) => value.HasValue ? new(value.Value) : new(value);
         public static explicit operator bool?(Value value) => value.As<bool?>();
         #endregion
 
@@ -153,24 +108,9 @@ namespace ValuePrototype
             _union.Char = value;
         }
 
-        public Value(char? value)
-        {
-            this = default;
-            if (value.HasValue)
-            {
-                _object = typeof(char?);
-                _union.Char = value.Value;
-            }
-            else
-            {
-                _object = TypeFlags.NullChar;
-                _union = default;
-            }
-        }
-
         public static implicit operator Value(char value) => new(value);
         public static explicit operator char(Value value) => value.As<char>();
-        public static implicit operator Value(char? value) => new(value);
+        public static implicit operator Value(char? value) => value.HasValue ? new(value.Value) : new(value);
         public static explicit operator char?(Value value) => value.As<char?>();
         #endregion
 
@@ -182,24 +122,9 @@ namespace ValuePrototype
             _union.Int16 = value;
         }
 
-        public Value(short? value)
-        {
-            this = default;
-            if (value.HasValue)
-            {
-                _object = typeof(short?);
-                _union.Int32 = value.Value;
-            }
-            else
-            {
-                _object = TypeFlags.NullInt16;
-                _union = default;
-            }
-        }
-
         public static implicit operator Value(short value) => new(value);
         public static explicit operator short(Value value) => value.As<short>();
-        public static implicit operator Value(short? value) => new(value);
+        public static implicit operator Value(short? value) => value.HasValue ? new(value.Value) : new(value);
         public static explicit operator short?(Value value) => value.As<short?>();
         #endregion
 
@@ -211,24 +136,9 @@ namespace ValuePrototype
             _union.Int32 = value;
         }
 
-        public Value(int? value)
-        {
-            this = default;
-            if (value.HasValue)
-            {
-                _object = typeof(int?);
-                _union.Int32 = value.Value;
-            }
-            else
-            {
-                _object = TypeFlags.NullInt32;
-                _union = default;
-            }
-        }
-
         public static implicit operator Value(int value) => new(value);
         public static explicit operator int(Value value) => value.As<int>();
-        public static implicit operator Value(int? value) => new(value);
+        public static implicit operator Value(int? value) => value.HasValue ? new(value.Value) : new(value);
         public static explicit operator int?(Value value) => value.As<int?>();
         #endregion
 
@@ -240,24 +150,9 @@ namespace ValuePrototype
             _union.Int64 = value;
         }
 
-        public Value(long? value)
-        {
-            this = default;
-            if (value.HasValue)
-            {
-                _object = typeof(long?);
-                _union.Int64 = value.Value;
-            }
-            else
-            {
-                _object = TypeFlags.NullInt64;
-                _union = default;
-            }
-        }
-
         public static implicit operator Value(long value) => new(value);
         public static explicit operator long(Value value) => value.As<long>();
-        public static implicit operator Value(long? value) => new(value);
+        public static implicit operator Value(long? value) => value.HasValue ? new(value.Value) : new(value);
         public static explicit operator long?(Value value) => value.As<long?>();
         #endregion
 
@@ -269,24 +164,9 @@ namespace ValuePrototype
             _union.UInt16 = value;
         }
 
-        public Value(ushort? value)
-        {
-            this = default;
-            if (value.HasValue)
-            {
-                _object = typeof(ushort?);
-                _union.UInt16 = value.Value;
-            }
-            else
-            {
-                _object = TypeFlags.NullUInt16;
-                _union = default;
-            }
-        }
-
         public static implicit operator Value(ushort value) => new(value);
         public static explicit operator ushort(Value value) => value.As<ushort>();
-        public static implicit operator Value(ushort? value) => new(value);
+        public static implicit operator Value(ushort? value) => value.HasValue ? new(value.Value) : new(value);
         public static explicit operator ushort?(Value value) => value.As<ushort?>();
         #endregion
 
@@ -298,24 +178,9 @@ namespace ValuePrototype
             _union.UInt32 = value;
         }
 
-        public Value(uint? value)
-        {
-            this = default;
-            if (value.HasValue)
-            {
-                _object = typeof(uint?);
-                _union.UInt32 = value.Value;
-            }
-            else
-            {
-                _object = TypeFlags.NullUInt32;
-                _union = default;
-            }
-        }
-
         public static implicit operator Value(uint value) => new(value);
         public static explicit operator uint(Value value) => value.As<uint>();
-        public static implicit operator Value(uint? value) => new(value);
+        public static implicit operator Value(uint? value) => value.HasValue ? new(value.Value) : new(value);
         public static explicit operator uint?(Value value) => value.As<uint?>();
         #endregion
 
@@ -327,24 +192,9 @@ namespace ValuePrototype
             _union.UInt64 = value;
         }
 
-        public Value(ulong? value)
-        {
-            this = default;
-            if (value.HasValue)
-            {
-                _object = typeof(ulong?);
-                _union.UInt64 = value.Value;
-            }
-            else
-            {
-                _object = TypeFlags.NullUInt64;
-                _union = default;
-            }
-        }
-
         public static implicit operator Value(ulong value) => new(value);
         public static explicit operator ulong(Value value) => value.As<ulong>();
-        public static implicit operator Value(ulong? value) => new(value);
+        public static implicit operator Value(ulong? value) => value.HasValue ? new(value.Value) : new(value);
         public static explicit operator ulong?(Value value) => value.As<ulong?>();
         #endregion
 
@@ -356,24 +206,9 @@ namespace ValuePrototype
             _union.Single = value;
         }
 
-        public Value(float? value)
-        {
-            this = default;
-            if (value.HasValue)
-            {
-                _object = typeof(float?);
-                _union.Single = value.Value;
-            }
-            else
-            {
-                _object = TypeFlags.NullSingle;
-                _union = default;
-            }
-        }
-
         public static implicit operator Value(float value) => new(value);
         public static explicit operator float(Value value) => value.As<float>();
-        public static implicit operator Value(float? value) => new(value);
+        public static implicit operator Value(float? value) => value.HasValue ? new(value.Value) : new(value);
         public static explicit operator float?(Value value) => value.As<float?>();
         #endregion
 
@@ -385,24 +220,9 @@ namespace ValuePrototype
             _union.Double = value;
         }
 
-        public Value(double? value)
-        {
-            this = default;
-            if (value.HasValue)
-            {
-                _object = typeof(double?);
-                _union.Double = value.Value;
-            }
-            else
-            {
-                _object = TypeFlags.NullDouble;
-                _union = default;
-            }
-        }
-
         public static implicit operator Value(double value) => new(value);
         public static explicit operator double(Value value) => value.As<double>();
-        public static implicit operator Value(double? value) => new(value);
+        public static implicit operator Value(double? value) => value.HasValue ? new(value.Value) : new(value);
         public static explicit operator double?(Value value) => value.As<double?>();
         #endregion
 
@@ -514,6 +334,8 @@ namespace ValuePrototype
 
         public static implicit operator Value(decimal value) => new(value);
         public static explicit operator decimal(Value value) => value.As<decimal>();
+        public static implicit operator Value(decimal? value) => value.HasValue ? new(value.Value) : new(value);
+        public static explicit operator decimal?(Value value) => value.As<decimal?>();
         #endregion
 
         #region T
@@ -540,7 +362,6 @@ namespace ValuePrototype
             if (_object is not null && ((typeof(T) == typeof(bool) && _object == TypeFlags.Boolean)
                 || (typeof(T) == typeof(byte) && _object == TypeFlags.Byte)
                 || (typeof(T) == typeof(char) && _object == TypeFlags.Char)
-                || (typeof(T) == typeof(decimal) && _object == TypeFlags.Decimal)
                 || (typeof(T) == typeof(double) && _object == TypeFlags.Double)
                 || (typeof(T) == typeof(short) && _object == TypeFlags.Int16)
                 || (typeof(T) == typeof(int) && _object == TypeFlags.Int32)
@@ -566,12 +387,21 @@ namespace ValuePrototype
         {
             if (_object is null)
             {
-                // A null is stored, it can only be assigned to a reference type.
+                // A null is stored, it can only be assigned to a reference type or nullable.
                 value = default!;
-                return !typeof(T).IsValueType;
+                return !typeof(T).IsValueType || Nullable.GetUnderlyingType(typeof(T)) is not null;
             }
 
             Type objectType = _object.GetType();
+
+            //if (typeof(T) == typeof(decimal?) && objectType == typeof(decimal))
+            //{
+            //    // Special case to wrap into a nullable so decimal is treated the same as the
+            //    // other C# intrinsics.
+
+            //    value = (T)(object)(decimal?)(decimal)_object;
+            //    return true;
+            //}
 
             if (objectType == typeof(T) || typeof(T).IsAssignableFrom(objectType))
             {
@@ -582,196 +412,81 @@ namespace ValuePrototype
 
             if (Nullable.GetUnderlyingType(typeof(T)) is Type nullableType)
             {
-                // Requested a nullable, see if we have a the underlying type or null token.
+                // Requested a nullable, see if we have a the underlying type.
 
                 // TODO: Is there any way to do this with one cast for all types?
-                if (nullableType == typeof(int))
+                if (nullableType == typeof(int) && _object == TypeFlags.Int32)
                 {
-                    if (_object == TypeFlags.Int32 || _object == typeof(int?))
-                    {
-                        value = Unsafe.As<int?, T>(ref Unsafe.AsRef((int?)_union.Int32));
-                        return true;
-                    }
-                    else if (_object == TypeFlags.NullInt32)
-                    {
-                        value = Unsafe.As<int?, T>(ref Unsafe.AsRef((int?)null));
-                        return true;
-                    }
+                    value = Unsafe.As<int?, T>(ref Unsafe.AsRef((int?)_union.Int32));
+                    return true;
                 }
 
-                if (nullableType == typeof(long))
+                if (nullableType == typeof(long) && (_object == TypeFlags.Int64 || _object == typeof(long?)))
                 {
-                    if (_object == TypeFlags.Int64 || _object == typeof(long?))
-                    {
-                        value = Unsafe.As<long?, T>(ref Unsafe.AsRef((long?)_union.Int64));
-                        return true;
-                    }
-                    else if (_object == TypeFlags.NullInt64)
-                    {
-                        value = Unsafe.As<long?, T>(ref Unsafe.AsRef((long?)null));
-                        return true;
-                    }
+                    value = Unsafe.As<long?, T>(ref Unsafe.AsRef((long?)_union.Int64));
+                    return true;
                 }
 
-                if (nullableType == typeof(bool))
+                if (nullableType == typeof(bool) && _object == TypeFlags.Boolean)
                 {
-                    if (_object == TypeFlags.Boolean || _object == typeof(bool?))
-                    {
-                        value = Unsafe.As<bool?, T>(ref Unsafe.AsRef((bool?)_union.Boolean));
-                        return true;
-                    }
-                    else if (_object == TypeFlags.NullBoolean)
-                    {
-                        value = Unsafe.As<bool?, T>(ref Unsafe.AsRef((bool?)null));
-                        return true;
-                    }
+                    value = Unsafe.As<bool?, T>(ref Unsafe.AsRef((bool?)_union.Boolean));
+                    return true;
                 }
 
-                if (nullableType == typeof(float))
+                if (nullableType == typeof(float) && (_object == TypeFlags.Single || _object == typeof(float?)))
                 {
-                    if (_object == TypeFlags.Single || _object == typeof(float?))
-                    {
-                        value = Unsafe.As<float?, T>(ref Unsafe.AsRef((float?)_union.Single));
-                        return true;
-                    }
-                    else if (_object == TypeFlags.NullSingle)
-                    {
-                        value = Unsafe.As<float?, T>(ref Unsafe.AsRef((float?)null));
-                        return true;
-                    }
+                    value = Unsafe.As<float?, T>(ref Unsafe.AsRef((float?)_union.Single));
+                    return true;
                 }
 
-                if (nullableType == typeof(double))
+                if (nullableType == typeof(double) && (_object == TypeFlags.Double || _object == typeof(double?)))
                 {
-                    if (_object == TypeFlags.Double || _object == typeof(double?))
-                    {
-                        value = Unsafe.As<double?, T>(ref Unsafe.AsRef((double?)_union.Double));
-                        return true;
-                    }
-                    else if (_object == TypeFlags.NullDouble)
-                    {
-                        value = Unsafe.As<double?, T>(ref Unsafe.AsRef((double?)null));
-                        return true;
-                    }
+                    value = Unsafe.As<double?, T>(ref Unsafe.AsRef((double?)_union.Double));
+                    return true;
                 }
 
-                if (nullableType == typeof(uint))
+                if (nullableType == typeof(uint) && (_object == TypeFlags.UInt32 || _object == typeof(uint?)))
                 {
-                    if (_object == TypeFlags.UInt32 || _object == typeof(uint?))
-                    {
-                        value = Unsafe.As<uint?, T>(ref Unsafe.AsRef((uint?)_union.UInt32));
-                        return true;
-                    }
-                    else if (_object == TypeFlags.NullUInt32)
-                    {
-                        value = Unsafe.As<uint?, T>(ref Unsafe.AsRef((uint?)null));
-                        return true;
-                    }
+                    value = Unsafe.As<uint?, T>(ref Unsafe.AsRef((uint?)_union.UInt32));
+                    return true;
                 }
 
-                if (nullableType == typeof(ulong))
+                if (nullableType == typeof(ulong) && (_object == TypeFlags.UInt64 || _object == typeof(ulong?)))
                 {
-                    if (_object == TypeFlags.UInt64 || _object == typeof(ulong?))
-                    {
-                        value = Unsafe.As<ulong?, T>(ref Unsafe.AsRef((ulong?)_union.UInt64));
-                        return true;
-                    }
-                    else if (_object == TypeFlags.NullUInt64)
-                    {
-                        value = Unsafe.As<ulong?, T>(ref Unsafe.AsRef((ulong?)null));
-                        return true;
-                    }
+                    value = Unsafe.As<ulong?, T>(ref Unsafe.AsRef((ulong?)_union.UInt64));
+                    return true;
                 }
 
-                if (nullableType == typeof(char))
+                if (nullableType == typeof(char) && (_object == TypeFlags.Char || _object == typeof(char?)))
                 {
-                    if (_object == TypeFlags.Char || _object == typeof(char?))
-                    {
-                        value = Unsafe.As<char?, T>(ref Unsafe.AsRef((char?)_union.Char));
-                        return true;
-                    }
-                    else if (_object == TypeFlags.NullChar)
-                    {
-                        value = Unsafe.As<char?, T>(ref Unsafe.AsRef((char?)null));
-                        return true;
-                    }
+                    value = Unsafe.As<char?, T>(ref Unsafe.AsRef((char?)_union.Char));
+                    return true;
                 }
 
-                if (nullableType == typeof(short))
+                if (nullableType == typeof(short) && (_object == TypeFlags.Int16 || _object == typeof(short?)))
                 {
-                    if (_object == TypeFlags.Int16 || _object == typeof(short?))
-                    {
-                        value = Unsafe.As<short?, T>(ref Unsafe.AsRef((short?)_union.Int16));
-                        return true;
-                    }
-                    else if (_object == TypeFlags.NullInt16)
-                    {
-                        value = Unsafe.As<short?, T>(ref Unsafe.AsRef((short?)null));
-                        return true;
-                    }
+                    value = Unsafe.As<short?, T>(ref Unsafe.AsRef((short?)_union.Int16));
+                    return true;
                 }
 
-                if (nullableType == typeof(ushort))
+                if (nullableType == typeof(ushort) && (_object == TypeFlags.UInt16 || _object == typeof(ushort?)))
                 {
-                    if (_object == TypeFlags.UInt16 || _object == typeof(ushort?))
-                    {
-                        value = Unsafe.As<ushort?, T>(ref Unsafe.AsRef((ushort?)_union.UInt16));
-                        return true;
-                    }
-                    else if (_object == TypeFlags.NullUInt16)
-                    {
-                        value = Unsafe.As<ushort?, T>(ref Unsafe.AsRef((ushort?)null));
-                        return true;
-                    }
+                    value = Unsafe.As<ushort?, T>(ref Unsafe.AsRef((ushort?)_union.UInt16));
+                    return true;
                 }
 
-                if (nullableType == typeof(byte))
+                if (nullableType == typeof(byte) && (_object == TypeFlags.Byte || _object == typeof(byte?)))
                 {
-                    if (_object == TypeFlags.Byte || _object == typeof(byte?))
-                    {
-                        value = Unsafe.As<byte?, T>(ref Unsafe.AsRef((byte?)_union.Byte));
-                        return true;
-                    }
-                    else if (_object == TypeFlags.NullByte)
-                    {
-                        value = Unsafe.As<byte?, T>(ref Unsafe.AsRef((byte?)null));
-                        return true;
-                    }
+                    value = Unsafe.As<byte?, T>(ref Unsafe.AsRef((byte?)_union.Byte));
+                    return true;
                 }
 
-                if (nullableType == typeof(sbyte))
+                if (nullableType == typeof(sbyte) && (_object == TypeFlags.SByte || _object == typeof(sbyte?)))
                 {
-                    if (_object == TypeFlags.SByte || _object == typeof(sbyte?))
-                    {
-                        value = Unsafe.As<sbyte?, T>(ref Unsafe.AsRef((sbyte?)_union.SByte));
-                        return true;
-                    }
-                    else if (_object == TypeFlags.NullSByte)
-                    {
-                        value = Unsafe.As<sbyte?, T>(ref Unsafe.AsRef((sbyte?)null));
-                        return true;
-                    }
+                    value = Unsafe.As<sbyte?, T>(ref Unsafe.AsRef((sbyte?)_union.SByte));
+                    return true;
                 }
 
-            }
-
-            if ((typeof(T) == typeof(bool) && _object == typeof(bool?))
-                || (typeof(T) == typeof(byte) && _object == typeof(byte?))
-                || (typeof(T) == typeof(char) && _object == typeof(char?))
-                //|| (typeof(T) == typeof(decimal) && _object == typeof(decimal?))
-                || (typeof(T) == typeof(double) && _object == typeof(double?))
-                || (typeof(T) == typeof(short) && _object == typeof(short?))
-                || (typeof(T) == typeof(int) && _object == typeof(int?))
-                || (typeof(T) == typeof(long) && _object == typeof(long?))
-                || (typeof(T) == typeof(sbyte) && _object == typeof(sbyte?))
-                || (typeof(T) == typeof(float) && _object == typeof(float?))
-                || (typeof(T) == typeof(ushort) && _object == typeof(ushort?))
-                || (typeof(T) == typeof(uint) && _object == typeof(uint?))
-                || (typeof(T) == typeof(ulong) && _object == typeof(ulong?)))
-            {
-                // We have a nullable with the requested underlying type.
-                value = CastTo<T>();
-                return true;
             }
 
             if (typeof(T) == typeof(Type) && _object is TypeBox box)

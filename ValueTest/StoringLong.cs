@@ -14,8 +14,8 @@ namespace ValueTest
 
             long? source = 42;
             value = source;
-            Assert.Equal(source, value.As<long?>());
-            Assert.Equal(typeof(long?), value.Type);
+            Assert.Equal(source, value.As<long>());
+            Assert.Equal(typeof(long), value.Type);
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace ValueTest
         {
             long? source = null;
             Value value = source;
-            Assert.Equal(typeof(long?), value.Type);
+            Assert.Null(value.Type);
             Assert.Equal(source, value.As<long?>());
             Assert.False(value.As<long?>().HasValue);
         }

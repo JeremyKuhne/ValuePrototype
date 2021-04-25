@@ -15,7 +15,7 @@ namespace ValueTest
             byte? source = 42;
             value = source;
             Assert.Equal(source, value.As<byte?>());
-            Assert.Equal(typeof(byte?), value.Type);
+            Assert.Equal(typeof(byte), value.Type);
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace ValueTest
         {
             byte? source = null;
             Value value = source;
-            Assert.Equal(typeof(byte?), value.Type);
+            Assert.Null(value.Type);
             Assert.Equal(source, value.As<byte?>());
             Assert.False(value.As<byte?>().HasValue);
         }

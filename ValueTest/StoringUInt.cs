@@ -15,7 +15,7 @@ namespace ValueTest
             uint? source = 42;
             value = source;
             Assert.Equal(source, value.As<uint?>());
-            Assert.Equal(typeof(uint?), value.Type);
+            Assert.Equal(typeof(uint), value.Type);
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace ValueTest
         {
             uint? source = null;
             Value value = source;
-            Assert.Equal(typeof(uint?), value.Type);
+            Assert.Null(value.Type);
             Assert.Equal(source, value.As<uint?>());
             Assert.False(value.As<uint?>().HasValue);
         }

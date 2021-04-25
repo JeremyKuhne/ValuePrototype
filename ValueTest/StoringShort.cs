@@ -15,7 +15,7 @@ namespace ValueTest
             short? source = 42;
             value = source;
             Assert.Equal(source, value.As<short?>());
-            Assert.Equal(typeof(short?), value.Type);
+            Assert.Equal(typeof(short), value.Type);
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace ValueTest
         {
             short? source = null;
             Value value = source;
-            Assert.Equal(typeof(short?), value.Type);
+            Assert.Null(value.Type);
             Assert.Equal(source, value.As<short?>());
             Assert.False(value.As<short?>().HasValue);
         }

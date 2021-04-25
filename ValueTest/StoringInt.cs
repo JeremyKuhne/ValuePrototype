@@ -54,7 +54,7 @@ namespace ValueTest
         {
             int? source = null;
             Value value = source;
-            Assert.Equal(typeof(int?), value.Type);
+            Assert.Null(value.Type);
             Assert.Equal(source, value.As<int?>());
             Assert.False(value.As<int?>().HasValue);
         }

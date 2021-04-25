@@ -15,7 +15,7 @@ namespace ValueTest
             float? source = 42.0f;
             value = source;
             Assert.Equal(source, value.As<float?>());
-            Assert.Equal(typeof(float?), value.Type);
+            Assert.Equal(typeof(float), value.Type);
         }
 
         [Theory]
@@ -74,7 +74,7 @@ namespace ValueTest
         {
             float? source = null;
             Value value = source;
-            Assert.Equal(typeof(float?), value.Type);
+            Assert.Null(value.Type);
             Assert.Equal(source, value.As<float?>());
             Assert.False(value.As<float?>().HasValue);
         }

@@ -15,7 +15,7 @@ namespace ValueTest
             double? source = 42.0d;
             value = source;
             Assert.Equal(source, value.As<double?>());
-            Assert.Equal(typeof(double?), value.Type);
+            Assert.Equal(typeof(double), value.Type);
         }
 
         [Theory]
@@ -66,7 +66,7 @@ namespace ValueTest
             Assert.True(success);
             Assert.Equal(@double, result);
 
-            Assert.Equal(@double, (double?)value);
+            Assert.Equal(@double, (double)value);
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace ValueTest
         {
             double? source = null;
             Value value = source;
-            Assert.Equal(typeof(double?), value.Type);
+            Assert.Null(value.Type);
             Assert.Equal(source, value.As<double?>());
             Assert.False(value.As<double?>().HasValue);
         }
