@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -394,15 +392,6 @@ namespace ValuePrototype
 
             Type objectType = _object.GetType();
 
-            //if (typeof(T) == typeof(decimal?) && objectType == typeof(decimal))
-            //{
-            //    // Special case to wrap into a nullable so decimal is treated the same as the
-            //    // other C# intrinsics.
-
-            //    value = (T)(object)(decimal?)(decimal)_object;
-            //    return true;
-            //}
-
             if (objectType == typeof(T) || typeof(T).IsAssignableFrom(objectType))
             {
                 // Same, or assignable.
@@ -421,7 +410,7 @@ namespace ValuePrototype
                     return true;
                 }
 
-                if (nullableType == typeof(long) && (_object == TypeFlags.Int64 || _object == typeof(long?)))
+                if (nullableType == typeof(long) && _object == TypeFlags.Int64)
                 {
                     value = Unsafe.As<long?, T>(ref Unsafe.AsRef((long?)_union.Int64));
                     return true;
@@ -433,55 +422,55 @@ namespace ValuePrototype
                     return true;
                 }
 
-                if (nullableType == typeof(float) && (_object == TypeFlags.Single || _object == typeof(float?)))
+                if (nullableType == typeof(float) && _object == TypeFlags.Single)
                 {
                     value = Unsafe.As<float?, T>(ref Unsafe.AsRef((float?)_union.Single));
                     return true;
                 }
 
-                if (nullableType == typeof(double) && (_object == TypeFlags.Double || _object == typeof(double?)))
+                if (nullableType == typeof(double) && _object == TypeFlags.Double)
                 {
                     value = Unsafe.As<double?, T>(ref Unsafe.AsRef((double?)_union.Double));
                     return true;
                 }
 
-                if (nullableType == typeof(uint) && (_object == TypeFlags.UInt32 || _object == typeof(uint?)))
+                if (nullableType == typeof(uint) && _object == TypeFlags.UInt32)
                 {
                     value = Unsafe.As<uint?, T>(ref Unsafe.AsRef((uint?)_union.UInt32));
                     return true;
                 }
 
-                if (nullableType == typeof(ulong) && (_object == TypeFlags.UInt64 || _object == typeof(ulong?)))
+                if (nullableType == typeof(ulong) && _object == TypeFlags.UInt64)
                 {
                     value = Unsafe.As<ulong?, T>(ref Unsafe.AsRef((ulong?)_union.UInt64));
                     return true;
                 }
 
-                if (nullableType == typeof(char) && (_object == TypeFlags.Char || _object == typeof(char?)))
+                if (nullableType == typeof(char) && _object == TypeFlags.Char)
                 {
                     value = Unsafe.As<char?, T>(ref Unsafe.AsRef((char?)_union.Char));
                     return true;
                 }
 
-                if (nullableType == typeof(short) && (_object == TypeFlags.Int16 || _object == typeof(short?)))
+                if (nullableType == typeof(short) && _object == TypeFlags.Int16)
                 {
                     value = Unsafe.As<short?, T>(ref Unsafe.AsRef((short?)_union.Int16));
                     return true;
                 }
 
-                if (nullableType == typeof(ushort) && (_object == TypeFlags.UInt16 || _object == typeof(ushort?)))
+                if (nullableType == typeof(ushort) && _object == TypeFlags.UInt16)
                 {
                     value = Unsafe.As<ushort?, T>(ref Unsafe.AsRef((ushort?)_union.UInt16));
                     return true;
                 }
 
-                if (nullableType == typeof(byte) && (_object == TypeFlags.Byte || _object == typeof(byte?)))
+                if (nullableType == typeof(byte) && _object == TypeFlags.Byte)
                 {
                     value = Unsafe.As<byte?, T>(ref Unsafe.AsRef((byte?)_union.Byte));
                     return true;
                 }
 
-                if (nullableType == typeof(sbyte) && (_object == TypeFlags.SByte || _object == typeof(sbyte?)))
+                if (nullableType == typeof(sbyte) && _object == TypeFlags.SByte)
                 {
                     value = Unsafe.As<sbyte?, T>(ref Unsafe.AsRef((sbyte?)_union.SByte));
                     return true;
@@ -522,4 +511,3 @@ namespace ValuePrototype
     }
 }
 
-#pragma warning restore CS0252 // Possible unintended reference comparison; left hand side needs cast
