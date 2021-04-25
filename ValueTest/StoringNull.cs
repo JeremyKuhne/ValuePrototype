@@ -12,7 +12,7 @@ namespace ValueTest
             ValueCompact nullValue = new((object?)null);
             Assert.Throws<InvalidCastException>(() => _ = nullValue.As<int>());
 
-            ValueCompactFast nullFastValue = new((object?)null);
+            Value nullFastValue = new((object?)null);
             Assert.Throws<InvalidCastException>(() => _ = nullFastValue.As<int>());
 
             bool success = nullFastValue.TryGetValue(out int result);

@@ -8,7 +8,7 @@ namespace ValueTest
         [Fact]
         public void LongImplicit()
         {
-            ValueCompactFast value = 42L;
+            Value value = 42L;
             Assert.Equal(42L, value.As<long>());
             Assert.Equal(typeof(long), value.Type);
 
@@ -23,7 +23,7 @@ namespace ValueTest
         [InlineData(long.MaxValue)]
         public void LongInOut(long @long)
         {
-            ValueCompactFast value = new(@long);
+            Value value = new(@long);
             bool success = value.TryGetValue(out long result);
             Assert.True(success);
             Assert.Equal(@long, result);
@@ -38,7 +38,7 @@ namespace ValueTest
         public void NullableLongInLongOut(long? @long)
         {
             long? source = @long;
-            ValueCompactFast value = new(source);
+            Value value = new(source);
 
             bool success = value.TryGetValue(out long result);
             Assert.True(success);
@@ -55,7 +55,7 @@ namespace ValueTest
         public void LongInNullableLongOut(long @long)
         {
             long source = @long;
-            ValueCompactFast value = new(source);
+            Value value = new(source);
             bool success = value.TryGetValue(out long? result);
             Assert.True(success);
             Assert.Equal(@long, result);
@@ -67,7 +67,7 @@ namespace ValueTest
         public void NullLong()
         {
             long? source = null;
-            ValueCompactFast value = source;
+            Value value = source;
             Assert.Equal(typeof(long?), value.Type);
             Assert.Equal(source, value.As<long?>());
             Assert.False(value.As<long?>().HasValue);

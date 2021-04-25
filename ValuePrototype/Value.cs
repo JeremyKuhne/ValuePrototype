@@ -7,12 +7,12 @@ using System.Text;
 
 namespace ValuePrototype
 {
-    public readonly partial struct ValueCompactFast
+    public readonly partial struct Value
     {
         private readonly Union _union;
         private readonly object? _object;
 
-        public ValueCompactFast(object? value)
+        public Value(object? value)
         {
             Debug.Assert(value is null || value.GetType() != typeof(Type));
             _object = value;
@@ -59,14 +59,14 @@ namespace ValuePrototype
         private static void ThrowNotImplemented() => throw new NotImplementedException();
 
         #region Int32
-        public ValueCompactFast(int value)
+        public Value(int value)
         {
             this = default;
             _object = TypeFlags.Int32;
             _union.Int32 = value;
         }
 
-        public ValueCompactFast(int? value)
+        public Value(int? value)
         {
             this = default;
             if (value.HasValue)
@@ -81,21 +81,21 @@ namespace ValuePrototype
             }
         }
 
-        public static implicit operator ValueCompactFast(int value) => new(value);
-        public static explicit operator int(ValueCompactFast variant) => variant.As<int>();
-        public static implicit operator ValueCompactFast(int? value) => new(value);
-        public static explicit operator int?(ValueCompactFast variant) => variant.As<int?>();
+        public static implicit operator Value(int value) => new(value);
+        public static explicit operator int(Value variant) => variant.As<int>();
+        public static implicit operator Value(int? value) => new(value);
+        public static explicit operator int?(Value variant) => variant.As<int?>();
         #endregion
 
         #region Int64
-        public ValueCompactFast(long value)
+        public Value(long value)
         {
             this = default;
             _object = TypeFlags.Int64;
             _union.Int64 = value;
         }
 
-        public ValueCompactFast(long? value)
+        public Value(long? value)
         {
             this = default;
             if (value.HasValue)
@@ -110,21 +110,21 @@ namespace ValuePrototype
             }
         }
 
-        public static implicit operator ValueCompactFast(long value) => new(value);
-        public static explicit operator long(ValueCompactFast variant) => variant.As<long>();
-        public static implicit operator ValueCompactFast(long? value) => new(value);
-        public static explicit operator long?(ValueCompactFast value) => value.As<long?>();
+        public static implicit operator Value(long value) => new(value);
+        public static explicit operator long(Value variant) => variant.As<long>();
+        public static implicit operator Value(long? value) => new(value);
+        public static explicit operator long?(Value value) => value.As<long?>();
         #endregion
 
         #region Single
-        public ValueCompactFast(float value)
+        public Value(float value)
         {
             this = default;
             _object = TypeFlags.Single;
             _union.Single = value;
         }
 
-        public ValueCompactFast(float? value)
+        public Value(float? value)
         {
             this = default;
             if (value.HasValue)
@@ -139,21 +139,21 @@ namespace ValuePrototype
             }
         }
 
-        public static implicit operator ValueCompactFast(float value) => new(value);
-        public static explicit operator float(ValueCompactFast value) => value.As<float>();
-        public static implicit operator ValueCompactFast(float? value) => new(value);
-        public static explicit operator float?(ValueCompactFast value) => value.As<float?>();
+        public static implicit operator Value(float value) => new(value);
+        public static explicit operator float(Value value) => value.As<float>();
+        public static implicit operator Value(float? value) => new(value);
+        public static explicit operator float?(Value value) => value.As<float?>();
         #endregion
 
         #region Double
-        public ValueCompactFast(double value)
+        public Value(double value)
         {
             this = default;
             _object = TypeFlags.Double;
             _union.Double = value;
         }
 
-        public ValueCompactFast(double? value)
+        public Value(double? value)
         {
             this = default;
             if (value.HasValue)
@@ -168,29 +168,29 @@ namespace ValuePrototype
             }
         }
 
-        public static implicit operator ValueCompactFast(double value) => new(value);
-        public static explicit operator double(ValueCompactFast value) => value.As<double>();
-        public static implicit operator ValueCompactFast(double? value) => new(value);
-        public static explicit operator double?(ValueCompactFast value) => value.As<double?>();
+        public static implicit operator Value(double value) => new(value);
+        public static explicit operator double(Value value) => value.As<double>();
+        public static implicit operator Value(double? value) => new(value);
+        public static explicit operator double?(Value value) => value.As<double?>();
         #endregion
 
         #region String
-        public ValueCompactFast(string value)
+        public Value(string value)
         {
             _object = value;
             _union = default;
         }
 
-        public static implicit operator ValueCompactFast(string value) => new(value);
+        public static implicit operator Value(string value) => new(value);
 
-        public ValueCompactFast(byte[] utf8, int index, int count)
+        public Value(byte[] utf8, int index, int count)
         {
             this = default;
             _object = utf8;
             _union.Segment = (index, count);
         }
 
-        public static explicit operator string(ValueCompactFast value)
+        public static explicit operator string(Value value)
         {
             var str = value._object as string;
             if (str != null) return str;
@@ -208,7 +208,7 @@ namespace ValuePrototype
         #endregion
 
         #region DateTimeOffset
-        public ValueCompactFast(DateTimeOffset value)
+        public Value(DateTimeOffset value)
         {
             this = default;
             if (value.Offset.Ticks == 0)
@@ -222,9 +222,9 @@ namespace ValuePrototype
             }
         }
 
-        public static implicit operator ValueCompactFast(DateTimeOffset value) => new(value);
+        public static implicit operator Value(DateTimeOffset value) => new(value);
 
-        public static explicit operator DateTimeOffset(ValueCompactFast variant)
+        public static explicit operator DateTimeOffset(Value variant)
         {
             if (variant._object?.Equals(typeof(DateTimeOffset)) == true)
             {
@@ -241,7 +241,7 @@ namespace ValuePrototype
         #endregion
 
         #region DateTime
-        public ValueCompactFast(DateTime value)
+        public Value(DateTime value)
         {
             this = default;
             if (value.Kind == DateTimeKind.Utc)
@@ -255,9 +255,9 @@ namespace ValuePrototype
             }
         }
 
-        public static implicit operator ValueCompactFast(DateTime value) => new(value);
+        public static implicit operator Value(DateTime value) => new(value);
 
-        public static explicit operator DateTime(ValueCompactFast value)
+        public static explicit operator DateTime(Value value)
         {
             if (value._object?.Equals(typeof(DateTime)) == true)
             {
@@ -274,29 +274,29 @@ namespace ValuePrototype
         #endregion
 
         #region Decimal
-        public ValueCompactFast(decimal value)
+        public Value(decimal value)
         {
             _object = value;
             _union = default;
         }
 
-        public static implicit operator ValueCompactFast(decimal value) => new(value);
-        public static explicit operator decimal(ValueCompactFast value) => value.As<decimal>();
+        public static implicit operator Value(decimal value) => new(value);
+        public static explicit operator decimal(Value value) => value.As<decimal>();
         #endregion
 
         #region T
-        public static ValueCompactFast Create<T>(T value)
+        public static Value Create<T>(T value)
         {
             var type = value as Type;
             if (type != null)
             {
-                return new ValueCompactFast(new TypeBox(type));
+                return new Value(new TypeBox(type));
             }
 
-            if (value is int i32) return new ValueCompactFast(i32);
-            if (value is double d) return new ValueCompactFast(d);
+            if (value is int i32) return new Value(i32);
+            if (value is double d) return new Value(d);
 
-            return new ValueCompactFast(value);
+            return new Value(value);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

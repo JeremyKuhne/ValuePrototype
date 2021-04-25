@@ -12,7 +12,7 @@ namespace ValuePerf
         [Benchmark(Baseline = true)]
         public A TryOut()
         {
-            ValueCompactFast value = new(s_A);
+            Value value = new(s_A);
             value.TryGetValue(out A result);
             return result;
         }
@@ -20,7 +20,7 @@ namespace ValuePerf
         [Benchmark]
         public A TryOutAssignable()
         {
-            ValueCompactFast value = new(s_B);
+            Value value = new(s_B);
             value.TryGetValue(out A result);
             return result;
         }

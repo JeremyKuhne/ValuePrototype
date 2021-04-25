@@ -10,7 +10,7 @@ namespace ValueTest
         public void BasicStorage()
         {
             A a = new();
-            ValueCompactFast value = new(a);
+            Value value = new(a);
             Assert.Equal(typeof(A), value.Type);
             Assert.Same(a, value.As<A>());
 
@@ -23,7 +23,7 @@ namespace ValueTest
         public void DerivedRetrieval()
         {
             B b = new();
-            ValueCompactFast value = new(b);
+            Value value = new(b);
             Assert.Equal(typeof(B), value.Type);
             Assert.Same(b, value.As<A>());
             Assert.Same(b, value.As<B>());
@@ -43,7 +43,7 @@ namespace ValueTest
         public void AsInterface()
         {
             I a = new A();
-            ValueCompactFast value = new(a);
+            Value value = new(a);
             Assert.Equal(typeof(A), value.Type);
 
             Assert.Same(a, value.As<A>());

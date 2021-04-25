@@ -1,6 +1,6 @@
 ﻿namespace ValuePrototype
 {
-    public readonly partial struct ValueCompactFast
+    public readonly partial struct Value
     {
         private static class TypeFlags
         {

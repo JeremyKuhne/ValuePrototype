@@ -16,14 +16,14 @@ namespace ValuePerf
         [Benchmark]
         public int ValueCompactFastPerf()
         {
-            ValueCompactFast value = new(42);
+            Value value = new(42);
             return value.As<int>();
         }
 
         [Benchmark]
         public int ValueCompactFastTryPerf()
         {
-            ValueCompactFast value = new(42);
+            Value value = new(42);
             value.TryGetValue(out int result);
             return result;
         }

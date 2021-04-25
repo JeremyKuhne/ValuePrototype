@@ -12,7 +12,7 @@ namespace ValueTest
             int result = value.As<int>();
             Assert.Equal(42, result);
 
-            ValueCompactFast valueFast = new(42);
+            Value valueFast = new(42);
             bool success = valueFast.TryGetValue(out result);
             Assert.True(success);
             Assert.Equal(42, result);
@@ -28,7 +28,7 @@ namespace ValueTest
             int result = value.As<int>();
             Assert.Equal(42, result);
 
-            ValueCompactFast valueFast = new(source);
+            Value valueFast = new(source);
             bool success = valueFast.TryGetValue(out result);
             Assert.True(success);
             Assert.Equal(42, result);
@@ -41,7 +41,7 @@ namespace ValueTest
         public void IntInNullableIntOut()
         {
             int source = 42;
-            ValueCompactFast valueFast = new(source);
+            Value valueFast = new(source);
             bool success = valueFast.TryGetValue(out int? result);
             Assert.True(success);
             Assert.Equal(42, result);

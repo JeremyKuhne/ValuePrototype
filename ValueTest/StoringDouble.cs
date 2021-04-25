@@ -8,7 +8,7 @@ namespace ValueTest
         [Fact]
         public void DoubleImplicit()
         {
-            ValueCompactFast value = 42.0d;
+            Value value = 42.0d;
             Assert.Equal(42.0d, value.As<double>());
             Assert.Equal(typeof(double), value.Type);
 
@@ -25,7 +25,7 @@ namespace ValueTest
         [InlineData(double.NaN)]
         public void DoubleInOut(double @double)
         {
-            ValueCompactFast value = new(@double);
+            Value value = new(@double);
             bool success = value.TryGetValue(out double result);
             Assert.True(success);
             Assert.Equal(@double, result);
@@ -42,7 +42,7 @@ namespace ValueTest
         public void NullableDoubleInDoubleOut(double? @double)
         {
             double? source = @double;
-            ValueCompactFast value = new(source);
+            Value value = new(source);
 
             bool success = value.TryGetValue(out double result);
             Assert.True(success);
@@ -61,7 +61,7 @@ namespace ValueTest
         public void DoubleInNullableDoubleOut(double @double)
         {
             double source = @double;
-            ValueCompactFast value = new(source);
+            Value value = new(source);
             bool success = value.TryGetValue(out double? result);
             Assert.True(success);
             Assert.Equal(@double, result);
@@ -73,7 +73,7 @@ namespace ValueTest
         public void NullDouble()
         {
             double? source = null;
-            ValueCompactFast value = source;
+            Value value = source;
             Assert.Equal(typeof(double?), value.Type);
             Assert.Equal(source, value.As<double?>());
             Assert.False(value.As<double?>().HasValue);

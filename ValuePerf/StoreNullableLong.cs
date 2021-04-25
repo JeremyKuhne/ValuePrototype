@@ -10,7 +10,7 @@ namespace ValuePerf
         public long? InOutNullableLong()
         {
             long? @long = 42;
-            ValueCompactFast value = new(@long);
+            Value value = new(@long);
             value.TryGetValue(out long? result);
             return result;
         }
@@ -19,7 +19,7 @@ namespace ValuePerf
         public long? InLongOutNullableLong()
         {
             long @long = 42;
-            ValueCompactFast value = new(@long);
+            Value value = new(@long);
             value.TryGetValue(out long? result);
             return result;
         }
@@ -28,7 +28,7 @@ namespace ValuePerf
         public long InNullableLongOutLong()
         {
             long? @long = 42;
-            ValueCompactFast value = new(@long);
+            Value value = new(@long);
             value.TryGetValue(out long result);
             return result;
         }

@@ -1,11 +1,9 @@
-﻿#pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
-
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 
 namespace ValuePrototype
 {
-    public readonly partial struct ValueCompactFast
+    public readonly partial struct Value
     {
         [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
         private struct Union
@@ -28,5 +26,3 @@ namespace ValuePrototype
         }
     }
 }
-
-#pragma warning restore CS0252 // Possible unintended reference comparison; left hand side needs cast

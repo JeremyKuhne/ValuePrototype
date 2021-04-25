@@ -10,14 +10,14 @@ namespace ValuePerf
         [Benchmark]
         public long ValueCompactFastPerf()
         {
-            ValueCompactFast value = new(42L);
+            Value value = new(42L);
             return value.As<long>();
         }
 
         [Benchmark(Baseline = true)]
         public long ValueCompactFastTryPerf()
         {
-            ValueCompactFast value = new(42L);
+            Value value = new(42L);
             value.TryGetValue(out long result);
             return result;
         }
@@ -25,7 +25,7 @@ namespace ValuePerf
         [Benchmark]
         public long ValueCompactFastCastPerf()
         {
-            ValueCompactFast value = new(42L);
+            Value value = new(42L);
             return (long)value;
         }
     }
