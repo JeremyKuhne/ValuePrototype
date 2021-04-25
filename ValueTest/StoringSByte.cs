@@ -5,23 +5,53 @@ namespace ValueTest
 {
     public class StoringSByte
     {
-        [Fact]
-        public void SByteImplicit()
+        public static TheoryData<sbyte> SByteData => new()
         {
-            Value value = (sbyte)42;
-            Assert.Equal(42, value.As<sbyte>());
+            { 42 },
+            { sbyte.MaxValue },
+            { sbyte.MinValue }
+        };
+
+        [Theory]
+        [MemberData(nameof(SByteData))]
+        public void SByteImplicit(sbyte @sbyte)
+        {
+            Value value = @sbyte;
+            Assert.Equal(@sbyte, value.As<sbyte>());
             Assert.Equal(typeof(sbyte), value.Type);
 
-            sbyte? source = 42;
+            sbyte? source = @sbyte;
             value = source;
             Assert.Equal(source, value.As<sbyte?>());
             Assert.Equal(typeof(sbyte), value.Type);
         }
 
         [Theory]
-        [InlineData((sbyte)42)]
-        [InlineData(sbyte.MinValue)]
-        [InlineData(sbyte.MaxValue)]
+        [MemberData(nameof(SByteData))]
+        public void SByteCreate(sbyte @sbyte)
+        {
+            Value value;
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(@sbyte);
+            }
+
+            Assert.Equal(@sbyte, value.As<sbyte>());
+            Assert.Equal(typeof(sbyte), value.Type);
+
+            sbyte? source = @sbyte;
+
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(source);
+            }
+
+            Assert.Equal(source, value.As<sbyte?>());
+            Assert.Equal(typeof(sbyte), value.Type);
+        }
+
+        [Theory]
+        [MemberData(nameof(SByteData))]
         public void SByteInOut(sbyte @sbyte)
         {
             Value value = new(@sbyte);
@@ -34,9 +64,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData((sbyte)42)]
-        [InlineData(sbyte.MinValue)]
-        [InlineData(sbyte.MaxValue)]
+        [MemberData(nameof(SByteData))]
         public void NullableSByteInSByteOut(sbyte? @sbyte)
         {
             sbyte? source = @sbyte;
@@ -52,9 +80,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData((sbyte)42)]
-        [InlineData(sbyte.MinValue)]
-        [InlineData(sbyte.MaxValue)]
+        [MemberData(nameof(SByteData))]
         public void SByteInNullableSByteOut(sbyte @sbyte)
         {
             sbyte source = @sbyte;

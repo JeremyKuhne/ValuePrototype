@@ -6,6 +6,14 @@ namespace ValueTest
 {
     public class StoringDateTime
     {
+        public static TheoryData<DateTime> DateTimeData => new()
+        {
+            { DateTime.Now },
+            { DateTime.UtcNow },
+            { DateTime.MaxValue },
+            { DateTime.MinValue }
+        };
+
         [Theory]
         [MemberData(nameof(DateTimeData))]
         public void DateTimeImplicit(DateTime @DateTime)
@@ -61,14 +69,6 @@ namespace ValueTest
 
             Assert.Equal(@DateTime, (DateTime?)value);
         }
-
-        public static TheoryData<DateTime> DateTimeData => new()
-        {
-            { DateTime.Now },
-            { DateTime.UtcNow },
-            { DateTime.MaxValue },
-            { DateTime.MinValue }
-        };
 
         [Fact]
         public void NullDateTime()

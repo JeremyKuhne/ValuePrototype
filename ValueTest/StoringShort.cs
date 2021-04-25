@@ -5,23 +5,53 @@ namespace ValueTest
 {
     public class StoringShort
     {
-        [Fact]
-        public void ShortImplicit()
+        public static TheoryData<short> ShortData => new()
         {
-            Value value = (short)42;
-            Assert.Equal(42, value.As<short>());
+            { 42 },
+            { short.MaxValue },
+            { short.MinValue }
+        };
+
+        [Theory]
+        [MemberData(nameof(ShortData))]
+        public void ShortImplicit(short @short)
+        {
+            Value value = @short;
+            Assert.Equal(@short, value.As<short>());
             Assert.Equal(typeof(short), value.Type);
 
-            short? source = 42;
+            short? source = @short;
             value = source;
             Assert.Equal(source, value.As<short?>());
             Assert.Equal(typeof(short), value.Type);
         }
 
         [Theory]
-        [InlineData((short)42)]
-        [InlineData(short.MinValue)]
-        [InlineData(short.MaxValue)]
+        [MemberData(nameof(ShortData))]
+        public void ShortCreate(short @short)
+        {
+            Value value;
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(@short);
+            }
+
+            Assert.Equal(@short, value.As<short>());
+            Assert.Equal(typeof(short), value.Type);
+
+            short? source = @short;
+
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(source);
+            }
+
+            Assert.Equal(source, value.As<short?>());
+            Assert.Equal(typeof(short), value.Type);
+        }
+
+        [Theory]
+        [MemberData(nameof(ShortData))]
         public void ShortInOut(short @short)
         {
             Value value = new(@short);
@@ -34,9 +64,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData((short)42)]
-        [InlineData(short.MinValue)]
-        [InlineData(short.MaxValue)]
+        [MemberData(nameof(ShortData))]
         public void NullableShortInShortOut(short? @short)
         {
             short? source = @short;
@@ -52,9 +80,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData((short)42)]
-        [InlineData(short.MinValue)]
-        [InlineData(short.MaxValue)]
+        [MemberData(nameof(ShortData))]
         public void ShortInNullableShortOut(short @short)
         {
             short source = @short;

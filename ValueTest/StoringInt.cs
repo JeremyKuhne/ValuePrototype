@@ -5,48 +5,91 @@ namespace ValueTest
 {
     public class StoringInt
     {
-        [Fact]
-        public void IntInOut()
+        public static TheoryData<int> IntData => new()
         {
-            ValueCompact value = new(42);
-            int result = value.As<int>();
-            Assert.Equal(42, result);
+            { 42 },
+            { int.MaxValue },
+            { int.MinValue }
+        };
 
-            Value valueFast = new(42);
-            bool success = valueFast.TryGetValue(out result);
-            Assert.True(success);
-            Assert.Equal(42, result);
+        [Theory]
+        [MemberData(nameof(IntData))]
+        public void IntImplicit(int @int)
+        {
+            Value value = @int;
+            Assert.Equal(@int, value.As<int>());
+            Assert.Equal(typeof(int), value.Type);
 
-            Assert.Equal(42, (int)valueFast);
+            int? source = @int;
+            value = source;
+            Assert.Equal(source, value.As<int?>());
+            Assert.Equal(typeof(int), value.Type);
         }
 
-        [Fact]
-        public void NullableIntInIntOut()
+        [Theory]
+        [MemberData(nameof(IntData))]
+        public void IntCreate(int @int)
         {
-            int? source = 42;
-            ValueCompact value = new(source);
-            int result = value.As<int>();
-            Assert.Equal(42, result);
+            Value value;
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(@int);
+            }
 
-            Value valueFast = new(source);
-            bool success = valueFast.TryGetValue(out result);
-            Assert.True(success);
-            Assert.Equal(42, result);
+            Assert.Equal(@int, value.As<int>());
+            Assert.Equal(typeof(int), value.Type);
 
-            Assert.Equal(42, (int)valueFast);
+            int? source = @int;
+
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(source);
+            }
+
+            Assert.Equal(source, value.As<int?>());
+            Assert.Equal(typeof(int), value.Type);
         }
 
-
-        [Fact]
-        public void IntInNullableIntOut()
+        [Theory]
+        [MemberData(nameof(IntData))]
+        public void IntInOut(int @int)
         {
-            int source = 42;
-            Value valueFast = new(source);
-            bool success = valueFast.TryGetValue(out int? result);
+            Value value = new(@int);
+            bool success = value.TryGetValue(out int result);
             Assert.True(success);
-            Assert.Equal(42, result);
+            Assert.Equal(@int, result);
 
-            Assert.Equal(42, (int?)valueFast);
+            Assert.Equal(@int, value.As<int>());
+            Assert.Equal(@int, (int)value);
+        }
+
+        [Theory]
+        [MemberData(nameof(IntData))]
+        public void NullableIntInIntOut(int? @int)
+        {
+            int? source = @int;
+            Value value = new(source);
+
+            bool success = value.TryGetValue(out int result);
+            Assert.True(success);
+            Assert.Equal(@int, result);
+
+            Assert.Equal(@int, value.As<int>());
+
+            Assert.Equal(@int, (int)value);
+        }
+
+        [Theory]
+        [MemberData(nameof(IntData))]
+        public void IntInNullableIntOut(int @int)
+        {
+            int source = @int;
+            Value value = new(source);
+            bool success = value.TryGetValue(out int? result);
+            Assert.True(success);
+            Assert.Equal(@int, result);
+
+            Assert.Equal(@int, (int?)value);
         }
 
         [Fact]
@@ -57,30 +100,6 @@ namespace ValueTest
             Assert.Null(value.Type);
             Assert.Equal(source, value.As<int?>());
             Assert.False(value.As<int?>().HasValue);
-        }
-
-        [Fact]
-        public void TypeAssertions()
-        {
-            byte b = default;
-            short s = default;
-            ushort us = default;
-            int i = default;
-            uint ui = default;
-            long l = default;
-            ulong ul = default;
-
-            float f = default;
-            double d = default;
-
-            s = b;
-            us = b;
-            i = b;
-            ui = b;
-            l = b;
-            ul = b;
-            f = b;
-            d = b;
         }
     }
 }

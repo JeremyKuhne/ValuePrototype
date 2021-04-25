@@ -5,24 +5,56 @@ namespace ValueTest
 {
     public class StoringFloat
     {
-        [Fact]
-        public void FloatImplicit()
+        public static TheoryData<float>FloatData => new()
         {
-            Value value = 42.0f;
-            Assert.Equal(42.0f, value.As<float>());
+            { 42f },
+            { float.MaxValue },
+            { float.MinValue },
+            { float.NaN },
+            { float.NegativeInfinity },
+            { float.PositiveInfinity }
+        };
+
+        [Theory]
+        [MemberData(nameof(FloatData))]
+        public void FloatImplicit(float @float)
+        {
+            Value value = @float;
+            Assert.Equal(@float, value.As<float>());
             Assert.Equal(typeof(float), value.Type);
 
-            float? source = 42.0f;
+            float? source = @float;
             value = source;
             Assert.Equal(source, value.As<float?>());
             Assert.Equal(typeof(float), value.Type);
         }
 
         [Theory]
-        [InlineData(42.0f)]
-        [InlineData(float.MaxValue)]
-        [InlineData(float.MinValue)]
-        [InlineData(float.NaN)]
+        [MemberData(nameof(FloatData))]
+        public void FloatCreate(float @float)
+        {
+            Value value;
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(@float);
+            }
+
+            Assert.Equal(@float, value.As<float>());
+            Assert.Equal(typeof(float), value.Type);
+
+            float? source = @float;
+
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(source);
+            }
+
+            Assert.Equal(source, value.As<float?>());
+            Assert.Equal(typeof(float), value.Type);
+        }
+
+        [Theory]
+        [MemberData(nameof(FloatData))]
         public void FloatInOut(float @float)
         {
             Value value = new(@float);
@@ -35,10 +67,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData(42.0f)]
-        [InlineData(float.MaxValue)]
-        [InlineData(float.MinValue)]
-        [InlineData(float.NaN)]
+        [MemberData(nameof(FloatData))]
         public void NullableFloatInFloatOut(float? @float)
         {
             float? source = @float;
@@ -54,10 +83,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData(42.0f)]
-        [InlineData(float.MaxValue)]
-        [InlineData(float.MinValue)]
-        [InlineData(float.NaN)]
+        [MemberData(nameof(FloatData))]
         public void FloatInNullableFloatOut(float @float)
         {
             float source = @float;

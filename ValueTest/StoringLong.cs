@@ -5,23 +5,53 @@ namespace ValueTest
 {
     public class StoringLong
     {
-        [Fact]
-        public void LongImplicit()
+        public static TheoryData<long> LongData => new()
         {
-            Value value = 42L;
-            Assert.Equal(42L, value.As<long>());
+            { 42 },
+            { long.MaxValue },
+            { long.MinValue }
+        };
+
+        [Theory]
+        [MemberData(nameof(LongData))]
+        public void LongImplicit(long @long)
+        {
+            Value value = @long;
+            Assert.Equal(@long, value.As<long>());
             Assert.Equal(typeof(long), value.Type);
 
-            long? source = 42;
+            long? source = @long;
             value = source;
             Assert.Equal(source, value.As<long>());
             Assert.Equal(typeof(long), value.Type);
         }
 
         [Theory]
-        [InlineData(42)]
-        [InlineData(long.MinValue)]
-        [InlineData(long.MaxValue)]
+        [MemberData(nameof(LongData))]
+        public void LongCreate(long @long)
+        {
+            Value value;
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(@long);
+            }
+
+            Assert.Equal(@long, value.As<long>());
+            Assert.Equal(typeof(long), value.Type);
+
+            long? source = @long;
+
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(source);
+            }
+
+            Assert.Equal(source, value.As<long?>());
+            Assert.Equal(typeof(long), value.Type);
+        }
+
+        [Theory]
+        [MemberData(nameof(LongData))]
         public void LongInOut(long @long)
         {
             Value value = new(@long);
@@ -34,9 +64,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData(42)]
-        [InlineData(long.MinValue)]
-        [InlineData(long.MaxValue)]
+        [MemberData(nameof(LongData))]
         public void NullableLongInLongOut(long? @long)
         {
             long? source = @long;
@@ -52,9 +80,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData(42)]
-        [InlineData(long.MinValue)]
-        [InlineData(long.MaxValue)]
+        [MemberData(nameof(LongData))]
         public void LongInNullableLongOut(long @long)
         {
             long source = @long;

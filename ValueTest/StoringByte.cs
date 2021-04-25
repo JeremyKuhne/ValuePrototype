@@ -5,23 +5,53 @@ namespace ValueTest
 {
     public class StoringByte
     {
-        [Fact]
-        public void ByteImplicit()
+        public static TheoryData<byte> ByteData => new()
         {
-            Value value = (byte)42;
-            Assert.Equal(42, value.As<byte>());
+            { 42 },
+            { byte.MaxValue },
+            { byte.MinValue }
+        };
+
+        [Theory]
+        [MemberData(nameof(ByteData))]
+        public void ByteImplicit(byte @byte)
+        {
+            Value value = @byte;
+            Assert.Equal(@byte, value.As<byte>());
             Assert.Equal(typeof(byte), value.Type);
 
-            byte? source = 42;
+            byte? source = @byte;
             value = source;
             Assert.Equal(source, value.As<byte?>());
             Assert.Equal(typeof(byte), value.Type);
         }
 
         [Theory]
-        [InlineData((byte)42)]
-        [InlineData(byte.MinValue)]
-        [InlineData(byte.MaxValue)]
+        [MemberData(nameof(ByteData))]
+        public void ByteCreate(byte @byte)
+        {
+            Value value;
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(@byte);
+            }
+
+            Assert.Equal(@byte, value.As<byte>());
+            Assert.Equal(typeof(byte), value.Type);
+
+            byte? source = @byte;
+
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(source);
+            }
+
+            Assert.Equal(source, value.As<byte?>());
+            Assert.Equal(typeof(byte), value.Type);
+        }
+
+        [Theory]
+        [MemberData(nameof(ByteData))]
         public void ByteInOut(byte @byte)
         {
             Value value = new(@byte);
@@ -34,9 +64,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData((byte)42)]
-        [InlineData(byte.MinValue)]
-        [InlineData(byte.MaxValue)]
+        [MemberData(nameof(ByteData))]
         public void NullableByteInByteOut(byte? @byte)
         {
             byte? source = @byte;
@@ -52,9 +80,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData((byte)42)]
-        [InlineData(byte.MinValue)]
-        [InlineData(byte.MaxValue)]
+        [MemberData(nameof(ByteData))]
         public void ByteInNullableByteOut(byte @byte)
         {
             byte source = @byte;

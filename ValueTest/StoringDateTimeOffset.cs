@@ -6,6 +6,14 @@ namespace ValueTest
 {
     public class StoringDateTimeOffset
     {
+        public static TheoryData<DateTimeOffset> DateTimeOffsetData => new()
+        {
+            { DateTimeOffset.Now },
+            { DateTimeOffset.UtcNow },
+            { DateTimeOffset.MaxValue },
+            { DateTimeOffset.MinValue }
+        };
+
         [Theory]
         [MemberData(nameof(DateTimeOffsetData))]
         public void DateTimeOffsetImplicit(DateTimeOffset @DateTimeOffset)
@@ -61,14 +69,6 @@ namespace ValueTest
 
             Assert.Equal(@DateTimeOffset, (DateTimeOffset?)value);
         }
-
-        public static TheoryData<DateTimeOffset> DateTimeOffsetData => new()
-        {
-            { DateTimeOffset.Now },
-            { DateTimeOffset.UtcNow },
-            { DateTimeOffset.MaxValue },
-            { DateTimeOffset.MinValue }
-        };
 
         [Fact]
         public void NullDateTimeOffset()

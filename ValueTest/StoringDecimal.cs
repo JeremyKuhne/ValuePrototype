@@ -5,6 +5,13 @@ namespace ValueTest
 {
     public class StoringDecimal
     {
+        public static TheoryData<decimal> DecimalData => new()
+        {
+            { 42 },
+            { decimal.MaxValue },
+            { decimal.MinValue }
+        };
+
         [Fact]
         public void DecimalImplicit()
         {
@@ -59,13 +66,6 @@ namespace ValueTest
 
             Assert.Equal(@decimal, (decimal?)value);
         }
-
-        public static TheoryData<decimal> DecimalData => new()
-        {
-            { 42 },
-            { decimal.MaxValue },
-            { decimal.MinValue }
-        };
 
         [Fact]
         public void NullDecimal()

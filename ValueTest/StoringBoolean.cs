@@ -5,26 +5,72 @@ namespace ValueTest
 {
     public class StoringBoolean
     {
-        [Fact]
-        public void BooleanImplicit()
+        public static TheoryData<bool> BoolData => new()
         {
-            Value value = true;
-            Assert.True(value.As<bool>());
+            { true },
+            { false }
+        };
+
+        [Theory]
+        [MemberData(nameof(BoolData))]
+        public void BooleanImplicit(bool @bool)
+        {
+            Value value;
+            using (MemoryWatch.Create)
+            {
+                value = @bool;
+            }
+
+            Assert.Equal(@bool, value.As<bool>());
             Assert.Equal(typeof(bool), value.Type);
 
-            bool? source = true;
-            value = source;
+            bool? source = @bool;
+            using (MemoryWatch.Create)
+            {
+                value = source;
+            }
             Assert.Equal(source, value.As<bool?>());
             Assert.Equal(typeof(bool), value.Type);
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
+        [MemberData(nameof(BoolData))]
+        public void BooleanCreate(bool @bool)
+        {
+            Value value;
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(@bool);
+            }
+
+            Assert.Equal(@bool, value.As<bool>());
+            Assert.Equal(typeof(bool), value.Type);
+
+            bool? source = @bool;
+
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(source);
+            }
+
+            Assert.Equal(source, value.As<bool?>());
+            Assert.Equal(typeof(bool), value.Type);
+        }
+
+        [Theory]
+        [MemberData(nameof(BoolData))]
         public void BooleanInOut(bool @bool)
         {
-            Value value = new(@bool);
-            bool success = value.TryGetValue(out bool result);
+            Value value;
+            bool success;
+            bool result;
+
+            using (MemoryWatch.Create)
+            {
+                value = new(@bool);
+                success = value.TryGetValue(out result);
+            }
+
             Assert.True(success);
             Assert.Equal(@bool, result);
 
@@ -33,14 +79,20 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
+        [MemberData(nameof(BoolData))]
         public void NullableBooleanInBooleanOut(bool? @bool)
         {
             bool? source = @bool;
-            Value value = new(source);
+            Value value;
+            bool success;
+            bool result;
 
-            bool success = value.TryGetValue(out bool result);
+            using (MemoryWatch.Create)
+            {
+                value = new(source);
+                success = value.TryGetValue(out result);
+            }
+
             Assert.True(success);
             Assert.Equal(@bool, result);
 
@@ -50,8 +102,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
+        [MemberData(nameof(BoolData))]
         public void BooleanInNullableBooleanOut(bool @bool)
         {
             bool source = @bool;
@@ -67,7 +118,13 @@ namespace ValueTest
         public void NullBoolean()
         {
             bool? source = null;
-            Value value = source;
+            Value value;
+
+            using (MemoryWatch.Create)
+            {
+                value = source;
+            }
+
             Assert.Null(value.Type);
             Assert.Equal(source, value.As<bool?>());
             Assert.False(value.As<bool?>().HasValue);

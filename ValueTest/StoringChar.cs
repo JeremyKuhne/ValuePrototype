@@ -5,23 +5,53 @@ namespace ValueTest
 {
     public class StoringChar
     {
-        [Fact]
-        public void CharImplicit()
+        public static TheoryData<char> CharData => new()
         {
-            Value value = '!';
-            Assert.Equal('!', value.As<char>());
+            { '!' },
+            { char.MaxValue },
+            { char.MinValue }
+        };
+
+        [Theory]
+        [MemberData(nameof(CharData))]
+        public void CharImplicit(char @char)
+        {
+            Value value = @char;
+            Assert.Equal(@char, value.As<char>());
             Assert.Equal(typeof(char), value.Type);
 
-            char? source = '!';
+            char? source = @char;
             value = source;
             Assert.Equal(source, value.As<char?>());
             Assert.Equal(typeof(char), value.Type);
         }
 
         [Theory]
-        [InlineData('!')]
-        [InlineData(char.MinValue)]
-        [InlineData(char.MaxValue)]
+        [MemberData(nameof(CharData))]
+        public void CharCreate(char @char)
+        {
+            Value value;
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(@char);
+            }
+
+            Assert.Equal(@char, value.As<char>());
+            Assert.Equal(typeof(char), value.Type);
+
+            char? source = @char;
+
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(source);
+            }
+
+            Assert.Equal(source, value.As<char?>());
+            Assert.Equal(typeof(char), value.Type);
+        }
+
+        [Theory]
+        [MemberData(nameof(CharData))]
         public void CharInOut(char @char)
         {
             Value value = new(@char);
@@ -34,9 +64,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData('!')]
-        [InlineData(char.MinValue)]
-        [InlineData(char.MaxValue)]
+        [MemberData(nameof(CharData))]
         public void NullableCharInCharOut(char? @char)
         {
             char? source = @char;
@@ -52,9 +80,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData('!')]
-        [InlineData(char.MinValue)]
-        [InlineData(char.MaxValue)]
+        [MemberData(nameof(CharData))]
         public void CharInNullableCharOut(char @char)
         {
             char source = @char;

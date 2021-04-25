@@ -5,23 +5,53 @@ namespace ValueTest
 {
     public class StoringUInt
     {
-        [Fact]
-        public void UIntImplicit()
+        public static TheoryData<uint> UIntData => new()
         {
-            Value value = 42u;
-            Assert.Equal(42u, value.As<uint>());
+            { 42 },
+            { uint.MaxValue },
+            { uint.MinValue }
+        };
+
+        [Theory]
+        [MemberData(nameof(UIntData))]
+        public void UIntImplicit(uint @uint)
+        {
+            Value value = @uint;
+            Assert.Equal(@uint, value.As<uint>());
             Assert.Equal(typeof(uint), value.Type);
 
-            uint? source = 42;
+            uint? source = @uint;
             value = source;
             Assert.Equal(source, value.As<uint?>());
             Assert.Equal(typeof(uint), value.Type);
         }
 
         [Theory]
-        [InlineData(42u)]
-        [InlineData(uint.MinValue)]
-        [InlineData(uint.MaxValue)]
+        [MemberData(nameof(UIntData))]
+        public void UIntCreate(uint @uint)
+        {
+            Value value;
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(@uint);
+            }
+
+            Assert.Equal(@uint, value.As<uint>());
+            Assert.Equal(typeof(uint), value.Type);
+
+            uint? source = @uint;
+
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(source);
+            }
+
+            Assert.Equal(source, value.As<uint?>());
+            Assert.Equal(typeof(uint), value.Type);
+        }
+
+        [Theory]
+        [MemberData(nameof(UIntData))]
         public void UIntInOut(uint @uint)
         {
             Value value = new(@uint);
@@ -34,9 +64,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData(42u)]
-        [InlineData(uint.MinValue)]
-        [InlineData(uint.MaxValue)]
+        [MemberData(nameof(UIntData))]
         public void NullableUIntInUIntOut(uint? @uint)
         {
             uint? source = @uint;
@@ -52,9 +80,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData(42u)]
-        [InlineData(uint.MinValue)]
-        [InlineData(uint.MaxValue)]
+        [MemberData(nameof(UIntData))]
         public void UIntInNullableUIntOut(uint @uint)
         {
             uint source = @uint;

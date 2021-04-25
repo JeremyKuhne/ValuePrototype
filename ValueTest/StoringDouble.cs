@@ -5,24 +5,56 @@ namespace ValueTest
 {
     public class StoringDouble
     {
-        [Fact]
-        public void DoubleImplicit()
+        public static TheoryData<double> DoubleData => new()
         {
-            Value value = 42.0d;
-            Assert.Equal(42.0d, value.As<double>());
+            { 42d },
+            { double.MaxValue },
+            { double.MinValue },
+            { double.NaN },
+            { double.NegativeInfinity },
+            { double.PositiveInfinity }
+        };
+
+        [Theory]
+        [MemberData(nameof(DoubleData))]
+        public void DoubleImplicit(double @double)
+        {
+            Value value = @double;
+            Assert.Equal(@double, value.As<double>());
             Assert.Equal(typeof(double), value.Type);
 
-            double? source = 42.0d;
+            double? source = @double;
             value = source;
             Assert.Equal(source, value.As<double?>());
             Assert.Equal(typeof(double), value.Type);
         }
 
         [Theory]
-        [InlineData(42d)]
-        [InlineData(double.MaxValue)]
-        [InlineData(double.MinValue)]
-        [InlineData(double.NaN)]
+        [MemberData(nameof(DoubleData))]
+        public void DoubleCreate(double @double)
+        {
+            Value value;
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(@double);
+            }
+
+            Assert.Equal(@double, value.As<double>());
+            Assert.Equal(typeof(double), value.Type);
+
+            double? source = @double;
+
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(source);
+            }
+
+            Assert.Equal(source, value.As<double?>());
+            Assert.Equal(typeof(double), value.Type);
+        }
+
+        [Theory]
+        [MemberData(nameof(DoubleData))]
         public void DoubleInOut(double @double)
         {
             Value value = new(@double);
@@ -35,10 +67,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData(42d)]
-        [InlineData(double.MaxValue)]
-        [InlineData(double.MinValue)]
-        [InlineData(double.NaN)]
+        [MemberData(nameof(DoubleData))]
         public void NullableDoubleInDoubleOut(double? @double)
         {
             double? source = @double;
@@ -54,10 +83,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData(42d)]
-        [InlineData(double.MaxValue)]
-        [InlineData(double.MinValue)]
-        [InlineData(double.NaN)]
+        [MemberData(nameof(DoubleData))]
         public void DoubleInNullableDoubleOut(double @double)
         {
             double source = @double;

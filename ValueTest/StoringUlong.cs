@@ -5,23 +5,53 @@ namespace ValueTest
 {
     public class StoringULong
     {
-        [Fact]
-        public void ULongImplicit()
+        public static TheoryData<ulong> ULongData => new()
         {
-            Value value = 42ul;
-            Assert.Equal(42ul, value.As<ulong>());
+            { 42 },
+            { ulong.MaxValue },
+            { ulong.MinValue }
+        };
+
+        [Theory]
+        [MemberData(nameof(ULongData))]
+        public void ULongImplicit(ulong @ulong)
+        {
+            Value value = @ulong;
+            Assert.Equal(@ulong, value.As<ulong>());
             Assert.Equal(typeof(ulong), value.Type);
 
-            ulong? source = 42;
+            ulong? source = @ulong;
             value = source;
             Assert.Equal(source, value.As<ulong?>());
             Assert.Equal(typeof(ulong), value.Type);
         }
 
         [Theory]
-        [InlineData(42ul)]
-        [InlineData(ulong.MinValue)]
-        [InlineData(ulong.MaxValue)]
+        [MemberData(nameof(ULongData))]
+        public void ULongCreate(ulong @ulong)
+        {
+            Value value;
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(@ulong);
+            }
+
+            Assert.Equal(@ulong, value.As<ulong>());
+            Assert.Equal(typeof(ulong), value.Type);
+
+            ulong? source = @ulong;
+
+            using (MemoryWatch.Create)
+            {
+                value = Value.Create(source);
+            }
+
+            Assert.Equal(source, value.As<ulong?>());
+            Assert.Equal(typeof(ulong), value.Type);
+        }
+
+        [Theory]
+        [MemberData(nameof(ULongData))]
         public void ULongInOut(ulong @ulong)
         {
             Value value = new(@ulong);
@@ -34,9 +64,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData(42ul)]
-        [InlineData(ulong.MinValue)]
-        [InlineData(ulong.MaxValue)]
+        [MemberData(nameof(ULongData))]
         public void NullableULongInULongOut(ulong? @ulong)
         {
             ulong? source = @ulong;
@@ -52,9 +80,7 @@ namespace ValueTest
         }
 
         [Theory]
-        [InlineData(42ul)]
-        [InlineData(ulong.MinValue)]
-        [InlineData(ulong.MaxValue)]
+        [MemberData(nameof(ULongData))]
         public void ULongInNullableULongOut(ulong @ulong)
         {
             ulong source = @ulong;
