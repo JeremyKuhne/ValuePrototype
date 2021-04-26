@@ -32,5 +32,29 @@ namespace ValuePerf
             value.TryGetValue(out long result);
             return result;
         }
+
+        [Benchmark]
+        public long? CastInOutNullableLong()
+        {
+            long? @long = 42;
+            Value value = @long;
+            return (long?)value;
+        }
+
+        [Benchmark]
+        public long? CastInLongOutNullableLong()
+        {
+            long @long = 42;
+            Value value = @long;
+            return (long?)value;
+        }
+
+        [Benchmark]
+        public long CastInNullableLongOutLong()
+        {
+            long? @long = 42;
+            Value value = @long;
+            return (long)value;
+        }
     }
 }

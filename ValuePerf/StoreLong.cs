@@ -8,14 +8,14 @@ namespace ValuePerf
     public class StoreLong
     {
         [Benchmark]
-        public long ValueCompactFastPerf()
+        public long ValueAsPerf()
         {
             Value value = new(42L);
             return value.As<long>();
         }
 
         [Benchmark(Baseline = true)]
-        public long ValueCompactFastTryPerf()
+        public long ValueTryPerf()
         {
             Value value = new(42L);
             value.TryGetValue(out long result);
@@ -23,10 +23,18 @@ namespace ValuePerf
         }
 
         [Benchmark]
-        public long ValueCompactFastCastPerf()
+        public long ValueCastOutPerf()
         {
             Value value = new(42L);
             return (long)value;
+        }
+
+        [Benchmark]
+        public long ValueCastInPerf()
+        {
+            Value value = 42L;
+            value.TryGetValue(out long result);
+            return result;
         }
     }
 }

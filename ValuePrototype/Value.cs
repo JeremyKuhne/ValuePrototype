@@ -89,9 +89,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(byte value) => new(value);
-        public static explicit operator byte(Value value) => value.As<byte>();
+        public static explicit operator byte(in Value value) => value.As<byte>();
         public static implicit operator Value(byte? value) => new(value);
-        public static explicit operator byte?(Value value) => value.As<byte?>();
+        public static explicit operator byte?(in Value value) => value.As<byte?>();
         #endregion
 
         #region SByte
@@ -117,9 +117,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(sbyte value) => new(value);
-        public static explicit operator sbyte(Value value) => value.As<sbyte>();
+        public static explicit operator sbyte(in Value value) => value.As<sbyte>();
         public static implicit operator Value(sbyte? value) => new(value);
-        public static explicit operator sbyte?(Value value) => value.As<sbyte?>();
+        public static explicit operator sbyte?(in Value value) => value.As<sbyte?>();
         #endregion
 
         #region Boolean
@@ -145,9 +145,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(bool value) => new(value);
-        public static explicit operator bool(Value value) => value.As<bool>();
+        public static explicit operator bool(in Value value) => value.As<bool>();
         public static implicit operator Value(bool? value) => new(value);
-        public static explicit operator bool?(Value value) => value.As<bool?>();
+        public static explicit operator bool?(in Value value) => value.As<bool?>();
         #endregion
 
         #region Char
@@ -173,9 +173,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(char value) => new(value);
-        public static explicit operator char(Value value) => value.As<char>();
+        public static explicit operator char(in Value value) => value.As<char>();
         public static implicit operator Value(char? value) => new(value);
-        public static explicit operator char?(Value value) => value.As<char?>();
+        public static explicit operator char?(in Value value) => value.As<char?>();
         #endregion
 
         #region Int16
@@ -201,9 +201,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(short value) => new(value);
-        public static explicit operator short(Value value) => value.As<short>();
+        public static explicit operator short(in Value value) => value.As<short>();
         public static implicit operator Value(short? value) => new(value);
-        public static explicit operator short?(Value value) => value.As<short?>();
+        public static explicit operator short?(in Value value) => value.As<short?>();
         #endregion
 
         #region Int32
@@ -229,9 +229,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(int value) => new(value);
-        public static explicit operator int(Value value) => value.As<int>();
+        public static explicit operator int(in Value value) => value.As<int>();
         public static implicit operator Value(int? value) => new(value);
-        public static explicit operator int?(Value value) => value.As<int?>();
+        public static explicit operator int?(in Value value) => value.As<int?>();
         #endregion
 
         #region Int64
@@ -257,9 +257,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(long value) => new(value);
-        public static explicit operator long(Value value) => value.As<long>();
+        public static explicit operator long(in Value value) => value.As<long>();
         public static implicit operator Value(long? value) => new(value);
-        public static explicit operator long?(Value value) => value.As<long?>();
+        public static explicit operator long?(in Value value) => value.As<long?>();
         #endregion
 
         #region UInt16
@@ -285,9 +285,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(ushort value) => new(value);
-        public static explicit operator ushort(Value value) => value.As<ushort>();
+        public static explicit operator ushort(in Value value) => value.As<ushort>();
         public static implicit operator Value(ushort? value) => new(value);
-        public static explicit operator ushort?(Value value) => value.As<ushort?>();
+        public static explicit operator ushort?(in Value value) => value.As<ushort?>();
         #endregion
 
         #region UInt32
@@ -313,9 +313,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(uint value) => new(value);
-        public static explicit operator uint(Value value) => value.As<uint>();
+        public static explicit operator uint(in Value value) => value.As<uint>();
         public static implicit operator Value(uint? value) => new(value);
-        public static explicit operator uint?(Value value) => value.As<uint?>();
+        public static explicit operator uint?(in Value value) => value.As<uint?>();
         #endregion
 
         #region UInt64
@@ -341,9 +341,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(ulong value) => new(value);
-        public static explicit operator ulong(Value value) => value.As<ulong>();
+        public static explicit operator ulong(in Value value) => value.As<ulong>();
         public static implicit operator Value(ulong? value) => new(value);
-        public static explicit operator ulong?(Value value) => value.As<ulong?>();
+        public static explicit operator ulong?(in Value value) => value.As<ulong?>();
         #endregion
 
         #region Single
@@ -369,9 +369,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(float value) => new(value);
-        public static explicit operator float(Value value) => value.As<float>();
+        public static explicit operator float(in Value value) => value.As<float>();
         public static implicit operator Value(float? value) => new(value);
-        public static explicit operator float?(Value value) => value.As<float?>();
+        public static explicit operator float?(in Value value) => value.As<float?>();
         #endregion
 
         #region Double
@@ -397,9 +397,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(double value) => new(value);
-        public static explicit operator double(Value value) => value.As<double>();
+        public static explicit operator double(in Value value) => value.As<double>();
         public static implicit operator Value(double? value) => new(value);
-        public static explicit operator double?(Value value) => value.As<double?>();
+        public static explicit operator double?(in Value value) => value.As<double?>();
         #endregion
 
         #region DateTimeOffset
@@ -433,9 +433,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(DateTimeOffset value) => new(value);
-        public static explicit operator DateTimeOffset(Value value) => value.As<DateTimeOffset>();
+        public static explicit operator DateTimeOffset(in Value value) => value.As<DateTimeOffset>();
         public static implicit operator Value(DateTimeOffset? value) => new(value);
-        public static explicit operator DateTimeOffset?(Value value) => value.As<DateTimeOffset?>();
+        public static explicit operator DateTimeOffset?(in Value value) => value.As<DateTimeOffset?>();
         #endregion
 
         #region DateTime
@@ -468,9 +468,9 @@ namespace ValuePrototype
         }
 
         public static implicit operator Value(DateTime value) => new(value);
-        public static explicit operator DateTime(Value value) => value.As<DateTime>();
+        public static explicit operator DateTime(in Value value) => value.As<DateTime>();
         public static implicit operator Value(DateTime? value) => new(value);
-        public static explicit operator DateTime?(Value value) => value.As<DateTime?>();
+        public static explicit operator DateTime?(in Value value) => value.As<DateTime?>();
         #endregion
 
         #region ArraySegment
@@ -520,9 +520,9 @@ namespace ValuePrototype
 
         #region Decimal
         public static implicit operator Value(decimal value) => new(value);
-        public static explicit operator decimal(Value value) => value.As<decimal>();
+        public static explicit operator decimal(in Value value) => value.As<decimal>();
         public static implicit operator Value(decimal? value) => value.HasValue ? new(value.Value) : new(value);
-        public static explicit operator decimal?(Value value) => value.As<decimal?>();
+        public static explicit operator decimal?(in Value value) => value.As<decimal?>();
         #endregion
 
         #region T
@@ -607,15 +607,17 @@ namespace ValuePrototype
 
         private bool TryGetSlow<T>(out T value)
         {
+            // Single return has a significant performance benefit.
+
+            bool result = false;
+
             if (_object is null)
             {
                 // A null is stored, it can only be assigned to a reference type or nullable.
                 value = default!;
-                return !typeof(T).IsValueType || Nullable.GetUnderlyingType(typeof(T)) is not null;
+                result = !typeof(T).IsValueType || Nullable.GetUnderlyingType(typeof(T)) is not null;
             }
-
-            // Array and ArraySegment handling
-            if (typeof(T) == typeof(ArraySegment<byte>))
+            else if (typeof(T) == typeof(ArraySegment<byte>))
             {
                 if (_object is byte[] byteArray)
                 {
@@ -624,13 +626,17 @@ namespace ValuePrototype
                         ? new(byteArray, _union.Segment.Offset, _union.Segment.Count)
                         : new(byteArray);
                     value = Unsafe.As<ArraySegment<byte>, T>(ref segment);
-                    return true;
+                    result = true;
                 }
                 else if (_object is EmptySegment emptySegment && emptySegment.Array is byte[] emptyArray)
                 {
                     ArraySegment<byte> segment = new(emptyArray, 0, 0);
                     value = Unsafe.As<ArraySegment<byte>, T>(ref segment);
-                    return true;
+                    result = true;
+                }
+                else
+                {
+                    value = default!;
                 }
             }
             else if (typeof(T) == typeof(ArraySegment<char>))
@@ -642,13 +648,17 @@ namespace ValuePrototype
                         ? new(charArray, _union.Segment.Offset, _union.Segment.Count)
                         : new(charArray);
                     value = Unsafe.As<ArraySegment<char>, T>(ref segment);
-                    return true;
+                    result = true;
                 }
                 else if (_object is EmptySegment emptySegment && emptySegment.Array is char[] emptyArray)
                 {
                     ArraySegment<char> segment = new(emptyArray, 0, 0);
                     value = Unsafe.As<ArraySegment<char>, T>(ref segment);
-                    return true;
+                    result = true;
+                }
+                else
+                {
+                    value = default!;
                 }
             }
             else if (typeof(T) == typeof(char[]) && _object is char[] charArray)
@@ -656,13 +666,13 @@ namespace ValuePrototype
                 if (_union.UInt64 == 0 || _union.Segment.Count == charArray.Length)
                 {
                     value = (T)_object;
-                    return true;
+                    result = true;
                 }
                 else
                 {
                     // Don't allow "implicit" cast to array if we stored a segment.
                     value = default!;
-                    return false;
+                    result = false;
                 }
             }
             else if (typeof(T) == typeof(byte[]) && _object is byte[] byteArray)
@@ -670,124 +680,103 @@ namespace ValuePrototype
                 if (_union.UInt64 == 0 || _union.Segment.Count == byteArray.Length)
                 {
                     value = (T)_object;
-                    return true;
+                    result = true;
                 }
                 else
                 {
                     // Don't allow "implicit" cast to array if we stored a segment.
                     value = default!;
-                    return false;
+                    result = false;
                 }
             }
-
-            Type objectType = _object.GetType();
-
-            if (objectType == typeof(T) || typeof(T).IsAssignableFrom(objectType))
+            else if (typeof(T) == typeof(int?) && _object == TypeFlags.Int32)
             {
-                // Same, or assignable.
-                value = (T)_object;
-                return true;
+                value = Unsafe.As<int?, T>(ref Unsafe.AsRef((int?)_union.Int32));
+                result = true;
             }
-
-            if (Nullable.GetUnderlyingType(typeof(T)) is Type nullableType)
+            else if (typeof(T) == typeof(long?) && _object == TypeFlags.Int64)
             {
-                // Requested a nullable, see if we have a the underlying type.
-
-                // TODO: Is there any way to do this with one cast for all types?
-                if (nullableType == typeof(int) && _object == TypeFlags.Int32)
-                {
-                    value = Unsafe.As<int?, T>(ref Unsafe.AsRef((int?)_union.Int32));
-                    return true;
-                }
-
-                if (nullableType == typeof(long) && _object == TypeFlags.Int64)
-                {
-                    value = Unsafe.As<long?, T>(ref Unsafe.AsRef((long?)_union.Int64));
-                    return true;
-                }
-
-                if (nullableType == typeof(bool) && _object == TypeFlags.Boolean)
-                {
-                    value = Unsafe.As<bool?, T>(ref Unsafe.AsRef((bool?)_union.Boolean));
-                    return true;
-                }
-
-                if (nullableType == typeof(float) && _object == TypeFlags.Single)
-                {
-                    value = Unsafe.As<float?, T>(ref Unsafe.AsRef((float?)_union.Single));
-                    return true;
-                }
-
-                if (nullableType == typeof(double) && _object == TypeFlags.Double)
-                {
-                    value = Unsafe.As<double?, T>(ref Unsafe.AsRef((double?)_union.Double));
-                    return true;
-                }
-
-                if (nullableType == typeof(uint) && _object == TypeFlags.UInt32)
-                {
-                    value = Unsafe.As<uint?, T>(ref Unsafe.AsRef((uint?)_union.UInt32));
-                    return true;
-                }
-
-                if (nullableType == typeof(ulong) && _object == TypeFlags.UInt64)
-                {
-                    value = Unsafe.As<ulong?, T>(ref Unsafe.AsRef((ulong?)_union.UInt64));
-                    return true;
-                }
-
-                if (nullableType == typeof(char) && _object == TypeFlags.Char)
-                {
-                    value = Unsafe.As<char?, T>(ref Unsafe.AsRef((char?)_union.Char));
-                    return true;
-                }
-
-                if (nullableType == typeof(short) && _object == TypeFlags.Int16)
-                {
-                    value = Unsafe.As<short?, T>(ref Unsafe.AsRef((short?)_union.Int16));
-                    return true;
-                }
-
-                if (nullableType == typeof(ushort) && _object == TypeFlags.UInt16)
-                {
-                    value = Unsafe.As<ushort?, T>(ref Unsafe.AsRef((ushort?)_union.UInt16));
-                    return true;
-                }
-
-                if (nullableType == typeof(byte) && _object == TypeFlags.Byte)
-                {
-                    value = Unsafe.As<byte?, T>(ref Unsafe.AsRef((byte?)_union.Byte));
-                    return true;
-                }
-
-                if (nullableType == typeof(sbyte) && _object == TypeFlags.SByte)
-                {
-                    value = Unsafe.As<sbyte?, T>(ref Unsafe.AsRef((sbyte?)_union.SByte));
-                    return true;
-                }
-
-                if (nullableType == typeof(DateTime) && _object == TypeFlags.DateTime)
-                {
-                    value = Unsafe.As<DateTime?, T>(ref Unsafe.AsRef((DateTime?)new DateTime(_union.Ticks, DateTimeKind.Utc)));
-                    return true;
-                }
-
-                if (nullableType == typeof(DateTimeOffset) && _object == TypeFlags.DateTimeOffset)
-                {
-                    value = Unsafe.As<DateTimeOffset?, T>(ref Unsafe.AsRef((DateTimeOffset?)new DateTimeOffset(_union.Ticks, TimeSpan.Zero)));
-                    return true;
-                }
+                value = Unsafe.As<long?, T>(ref Unsafe.AsRef((long?)_union.Int64));
+                result = true;
             }
-
-            if (typeof(T) == typeof(Type) && _object is TypeBox box)
+            else if (typeof(T) == typeof(bool?) && _object == TypeFlags.Boolean)
+            {
+                value = Unsafe.As<bool?, T>(ref Unsafe.AsRef((bool?)_union.Boolean));
+                result = true;
+            }
+            else if (typeof(T) == typeof(float?) && _object == TypeFlags.Single)
+            {
+                value = Unsafe.As<float?, T>(ref Unsafe.AsRef((float?)_union.Single));
+                result = true;
+            }
+            else if (typeof(T) == typeof(double?) && _object == TypeFlags.Double)
+            {
+                value = Unsafe.As<double?, T>(ref Unsafe.AsRef((double?)_union.Double));
+                result = true;
+            }
+            else if (typeof(T) == typeof(uint?) && _object == TypeFlags.UInt32)
+            {
+                value = Unsafe.As<uint?, T>(ref Unsafe.AsRef((uint?)_union.UInt32));
+                result = true;
+            }
+            else if (typeof(T) == typeof(ulong?) && _object == TypeFlags.UInt64)
+            {
+                value = Unsafe.As<ulong?, T>(ref Unsafe.AsRef((ulong?)_union.UInt64));
+                result = true;
+            }
+            else if (typeof(T) == typeof(char?) && _object == TypeFlags.Char)
+            {
+                value = Unsafe.As<char?, T>(ref Unsafe.AsRef((char?)_union.Char));
+                result = true;
+            }
+            else if (typeof(T) == typeof(short?) && _object == TypeFlags.Int16)
+            {
+                value = Unsafe.As<short?, T>(ref Unsafe.AsRef((short?)_union.Int16));
+                result = true;
+            }
+            else if (typeof(T) == typeof(ushort?) && _object == TypeFlags.UInt16)
+            {
+                value = Unsafe.As<ushort?, T>(ref Unsafe.AsRef((ushort?)_union.UInt16));
+                result = true;
+            }
+            else if (typeof(T) == typeof(byte?) && _object == TypeFlags.Byte)
+            {
+                value = Unsafe.As<byte?, T>(ref Unsafe.AsRef((byte?)_union.Byte));
+                result = true;
+            }
+            else if (typeof(T) == typeof(sbyte?) && _object == TypeFlags.SByte)
+            {
+                value = Unsafe.As<sbyte?, T>(ref Unsafe.AsRef((sbyte?)_union.SByte));
+                result = true;
+            }
+            else if (typeof(T) == typeof(DateTime?) && _object == TypeFlags.DateTime)
+            {
+                value = Unsafe.As<DateTime?, T>(ref Unsafe.AsRef((DateTime?)new DateTime(_union.Ticks, DateTimeKind.Utc)));
+                result = true;
+            }
+            else if (typeof(T) == typeof(DateTimeOffset?) && _object == TypeFlags.DateTimeOffset)
+            {
+                value = Unsafe.As<DateTimeOffset?, T>(ref Unsafe.AsRef((DateTimeOffset?)new DateTimeOffset(_union.Ticks, TimeSpan.Zero)));
+                result = true;
+            }
+            else if (typeof(T) == typeof(Type) && _object is TypeBox box)
             {
                 // The value was actually a Type object.
                 value = (T)(object)box.Value;
-                return true;
+                result = true;
+            }
+            else if (_object is T t)
+            {
+                value = t;
+                result = true;
+            }
+            else
+            {
+                value = default!;
+                result = false;
             }
 
-            value = default!;
-            return false;
+            return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
