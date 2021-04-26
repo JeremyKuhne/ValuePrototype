@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace ValuePrototype
 {
@@ -25,8 +24,7 @@ namespace ValuePrototype
                     return null;
                 }
 
-                var type = _object as Type;
-                if (type != null)
+                if (_object is Type type)
                 {
                     return type;
                 }
@@ -36,16 +34,29 @@ namespace ValuePrototype
                     return typeFlag.Type;
                 }
 
-                type = _object.GetType();
-
-                if (type == typeof(byte[]))
-                {
-                    return typeof(string);
-                }
-
-                if (type == typeof(TypeBox))
+                if (_object is TypeBox)
                 {
                     return typeof(Type);
+                }
+
+                type = _object.GetType();
+
+                if (type.IsArray && _union.UInt64 != 0)
+                {
+                    // We have an ArraySegment
+                    Type? elementType = type.GetElementType();
+                    if (elementType == typeof(byte))
+                    {
+                        return typeof(ArraySegment<byte>);
+                    }
+                    else if (elementType == typeof(char))
+                    {
+                        return typeof(ArraySegment<char>);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
                 }
 
                 return type;
@@ -53,7 +64,7 @@ namespace ValuePrototype
         }
 
         private static void ThrowInvalidCast() => throw new InvalidCastException();
-        private static void ThrowNotImplemented() => throw new NotImplementedException();
+        private static void ThrowArgumentNull(string paramName) => throw new ArgumentNullException(paramName);
 
         #region Byte
         public Value(byte value)
@@ -462,6 +473,51 @@ namespace ValuePrototype
         public static explicit operator DateTime?(Value value) => value.As<DateTime?>();
         #endregion
 
+        #region ArraySegment
+        public Value(ArraySegment<byte> segment)
+        {
+            this = default;
+            byte[]? array = segment.Array;
+            if (array is null)
+            {
+                ThrowArgumentNull(nameof(segment));
+                return;
+            }
+
+            if (segment.Offset == 0 && segment.Count == 0)
+            {
+                _object = new EmptySegment(array, typeof(ArraySegment<byte>));
+            }
+            else
+            {
+                _object = array;
+                _union.Segment = (segment.Offset, segment.Count);
+            }
+        }
+
+        public Value(ArraySegment<char> segment)
+        {
+            this = default;
+            char[]? array = segment.Array;
+            if (array is null)
+            {
+                ThrowArgumentNull(nameof(segment));
+                return;
+            }
+
+            if (segment.Offset == 0 && segment.Count == 0)
+            {
+                _object = new EmptySegment(array, typeof(ArraySegment<char>));
+            }
+            else
+            {
+                _object = array;
+                _union.Segment = (segment.Offset, segment.Count);
+            }
+        }
+        #endregion
+
+
         #region Decimal
         public static implicit operator Value(decimal value) => new(value);
         public static explicit operator decimal(Value value) => value.As<decimal>();
@@ -502,6 +558,9 @@ namespace ValuePrototype
             if (typeof(T) == typeof(double?)) return new(Unsafe.As<T, double?>(ref Unsafe.AsRef(value)));
             if (typeof(T) == typeof(DateTime?)) return new(Unsafe.As<T, DateTime?>(ref Unsafe.AsRef(value)));
             if (typeof(T) == typeof(DateTimeOffset?)) return new(Unsafe.As<T, DateTimeOffset?>(ref Unsafe.AsRef(value)));
+
+            if (typeof(T) == typeof(ArraySegment<byte>)) return new(Unsafe.As<T, ArraySegment<byte>>(ref Unsafe.AsRef(value)));
+            if (typeof(T) == typeof(ArraySegment<char>)) return new(Unsafe.As<T, ArraySegment<char>>(ref Unsafe.AsRef(value)));
 
             return new Value(value);
         }
@@ -553,6 +612,72 @@ namespace ValuePrototype
                 // A null is stored, it can only be assigned to a reference type or nullable.
                 value = default!;
                 return !typeof(T).IsValueType || Nullable.GetUnderlyingType(typeof(T)) is not null;
+            }
+
+            // Array and ArraySegment handling
+            if (typeof(T) == typeof(ArraySegment<byte>))
+            {
+                if (_object is byte[] byteArray)
+                {
+                    bool hasSegment = _union.UInt64 != 0;
+                    ArraySegment<byte> segment = hasSegment
+                        ? new(byteArray, _union.Segment.Offset, _union.Segment.Count)
+                        : new(byteArray);
+                    value = Unsafe.As<ArraySegment<byte>, T>(ref segment);
+                    return true;
+                }
+                else if (_object is EmptySegment emptySegment && emptySegment.Array is byte[] emptyArray)
+                {
+                    ArraySegment<byte> segment = new(emptyArray, 0, 0);
+                    value = Unsafe.As<ArraySegment<byte>, T>(ref segment);
+                    return true;
+                }
+            }
+            else if (typeof(T) == typeof(ArraySegment<char>))
+            {
+                if (_object is char[] charArray)
+                {
+                    bool hasSegment = _union.UInt64 != 0;
+                    ArraySegment<char> segment = hasSegment
+                        ? new(charArray, _union.Segment.Offset, _union.Segment.Count)
+                        : new(charArray);
+                    value = Unsafe.As<ArraySegment<char>, T>(ref segment);
+                    return true;
+                }
+                else if (_object is EmptySegment emptySegment && emptySegment.Array is char[] emptyArray)
+                {
+                    ArraySegment<char> segment = new(emptyArray, 0, 0);
+                    value = Unsafe.As<ArraySegment<char>, T>(ref segment);
+                    return true;
+                }
+            }
+            else if (typeof(T) == typeof(char[]) && _object is char[] charArray)
+            {
+                if (_union.UInt64 == 0 || _union.Segment.Count == charArray.Length)
+                {
+                    value = (T)_object;
+                    return true;
+                }
+                else
+                {
+                    // Don't allow "implicit" cast to array if we stored a segment.
+                    value = default!;
+                    return false;
+                }
+            }
+            else if (typeof(T) == typeof(byte[]) && _object is byte[] byteArray)
+            {
+                if (_union.UInt64 == 0 || _union.Segment.Count == byteArray.Length)
+                {
+                    value = (T)_object;
+                    return true;
+                }
+                else
+                {
+                    // Don't allow "implicit" cast to array if we stored a segment.
+                    value = default!;
+                    return false;
+                }
             }
 
             Type objectType = _object.GetType();

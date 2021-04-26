@@ -22,7 +22,7 @@ namespace ValuePrototype
             [FieldOffset(0)] public float Single;                   // 4 bytes
             [FieldOffset(0)] public double Double;                  // 8 bytes
             [FieldOffset(0)] public DateTime DateTime;              // 8 bytes  (ulong)
-            [FieldOffset(0)] public (int Index, int Count) Segment;
+            [FieldOffset(0)] public (int Offset, int Count) Segment;
         }
     }
 }
