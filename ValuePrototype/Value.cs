@@ -11,7 +11,7 @@ namespace ValuePrototype
 
         public Value(object? value)
         {
-            _object = value is Type type ? new TypeBox(type) : value;
+            _object = value;
             _union = default;
         }
 
@@ -32,11 +32,6 @@ namespace ValuePrototype
                 if (_object is TypeFlag typeFlag)
                 {
                     return typeFlag.Type;
-                }
-
-                if (_object is TypeBox)
-                {
-                    return typeof(Type);
                 }
 
                 type = _object.GetType();
@@ -757,12 +752,6 @@ namespace ValuePrototype
             else if (typeof(T) == typeof(DateTimeOffset?) && _object == TypeFlags.DateTimeOffset)
             {
                 value = Unsafe.As<DateTimeOffset?, T>(ref Unsafe.AsRef((DateTimeOffset?)new DateTimeOffset(_union.Ticks, TimeSpan.Zero)));
-                result = true;
-            }
-            else if (typeof(T) == typeof(Type) && _object is TypeBox box)
-            {
-                // The value was actually a Type object.
-                value = (T)(object)box.Value;
                 result = true;
             }
             else if (_object is T t)
