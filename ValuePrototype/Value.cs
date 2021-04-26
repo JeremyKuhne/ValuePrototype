@@ -19,38 +19,35 @@ namespace ValuePrototype
         {
             get
             {
+                Type? type;
                 if (_object is null)
                 {
-                    return null;
+                    type = null;
                 }
-
-                if (_object is Type type)
+                else if (_object is TypeFlag typeFlag)
                 {
-                    return type;
+                    type = typeFlag.Type;
                 }
-
-                if (_object is TypeFlag typeFlag)
+                else
                 {
-                    return typeFlag.Type;
-                }
+                    type = _object.GetType();
 
-                type = _object.GetType();
-
-                if (type.IsArray && _union.UInt64 != 0)
-                {
-                    // We have an ArraySegment
-                    Type? elementType = type.GetElementType();
-                    if (elementType == typeof(byte))
+                    if (_union.UInt64 != 0 && type.IsArray)
                     {
-                        return typeof(ArraySegment<byte>);
-                    }
-                    else if (elementType == typeof(char))
-                    {
-                        return typeof(ArraySegment<char>);
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException();
+                        // We have an ArraySegment
+                        Type? elementType = type.GetElementType();
+                        if (elementType == typeof(byte))
+                        {
+                            type = typeof(ArraySegment<byte>);
+                        }
+                        else if (elementType == typeof(char))
+                        {
+                            type = typeof(ArraySegment<char>);
+                        }
+                        else
+                        {
+                            ThrowInvalidOperation();
+                        }
                     }
                 }
 
@@ -60,6 +57,7 @@ namespace ValuePrototype
 
         private static void ThrowInvalidCast() => throw new InvalidCastException();
         private static void ThrowArgumentNull(string paramName) => throw new ArgumentNullException(paramName);
+        private static void ThrowInvalidOperation() => throw new InvalidOperationException();
 
         #region Byte
         public Value(byte value)
