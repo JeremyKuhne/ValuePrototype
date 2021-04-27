@@ -7,6 +7,7 @@ namespace ValueTest
     {
         public static TheoryData<int> IntData => new()
         {
+            { 0 },
             { 42 },
             { int.MaxValue },
             { int.MinValue }
@@ -85,11 +86,36 @@ namespace ValueTest
         {
             int source = @int;
             Value value = new(source);
-            bool success = value.TryGetValue(out int? result);
-            Assert.True(success);
+            Assert.True(value.TryGetValue(out int? result));
             Assert.Equal(@int, result);
 
             Assert.Equal(@int, (int?)value);
+        }
+
+        [Theory]
+        [MemberData(nameof(IntData))]
+        public void BoxedInt(int @int)
+        {
+            int i = @int;
+            object o = i;
+            Value value = new(o);
+
+            Assert.Equal(typeof(int), value.Type);
+            Assert.True(value.TryGetValue(out int result));
+            Assert.Equal(@int, result);
+            Assert.True(value.TryGetValue(out int? nullableResult));
+            Assert.Equal(@int, nullableResult!.Value);
+
+
+            int? n = @int;
+            o = n;
+            value = new(o);
+
+            Assert.Equal(typeof(int), value.Type);
+            Assert.True(value.TryGetValue(out result));
+            Assert.Equal(@int, result);
+            Assert.True(value.TryGetValue(out nullableResult));
+            Assert.Equal(@int, nullableResult!.Value);
         }
 
         [Fact]

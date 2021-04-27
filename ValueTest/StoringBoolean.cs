@@ -114,6 +114,32 @@ namespace ValueTest
             Assert.Equal(@bool, (bool?)value);
         }
 
+        [Theory]
+        [MemberData(nameof(BoolData))]
+        public void BoxedBoolean(bool @bool)
+        {
+            bool i = @bool;
+            object o = i;
+            Value value = new(o);
+
+            Assert.Equal(typeof(bool), value.Type);
+            Assert.True(value.TryGetValue(out bool result));
+            Assert.Equal(@bool, result);
+            Assert.True(value.TryGetValue(out bool? nullableResult));
+            Assert.Equal(@bool, nullableResult!.Value);
+
+
+            bool? n = @bool;
+            o = n;
+            value = new(o);
+
+            Assert.Equal(typeof(bool), value.Type);
+            Assert.True(value.TryGetValue(out result));
+            Assert.Equal(@bool, result);
+            Assert.True(value.TryGetValue(out nullableResult));
+            Assert.Equal(@bool, nullableResult!.Value);
+        }
+
         [Fact]
         public void NullBoolean()
         {

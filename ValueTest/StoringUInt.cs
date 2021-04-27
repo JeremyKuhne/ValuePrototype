@@ -92,6 +92,32 @@ namespace ValueTest
             Assert.Equal(@uint, (uint?)value);
         }
 
+        [Theory]
+        [MemberData(nameof(UIntData))]
+        public void BoxedUInt(uint @uint)
+        {
+            uint i = @uint;
+            object o = i;
+            Value value = new(o);
+
+            Assert.Equal(typeof(uint), value.Type);
+            Assert.True(value.TryGetValue(out uint result));
+            Assert.Equal(@uint, result);
+            Assert.True(value.TryGetValue(out uint? nullableResult));
+            Assert.Equal(@uint, nullableResult!.Value);
+
+
+            uint? n = @uint;
+            o = n;
+            value = new(o);
+
+            Assert.Equal(typeof(uint), value.Type);
+            Assert.True(value.TryGetValue(out result));
+            Assert.Equal(@uint, result);
+            Assert.True(value.TryGetValue(out nullableResult));
+            Assert.Equal(@uint, nullableResult!.Value);
+        }
+
         [Fact]
         public void NullUInt()
         {

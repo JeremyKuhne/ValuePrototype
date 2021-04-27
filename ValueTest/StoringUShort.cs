@@ -92,6 +92,32 @@ namespace ValueTest
             Assert.Equal(@ushort, (ushort?)value);
         }
 
+        [Theory]
+        [MemberData(nameof(UShortData))]
+        public void BoxedUShort(ushort @ushort)
+        {
+            ushort i = @ushort;
+            object o = i;
+            Value value = new(o);
+
+            Assert.Equal(typeof(ushort), value.Type);
+            Assert.True(value.TryGetValue(out ushort result));
+            Assert.Equal(@ushort, result);
+            Assert.True(value.TryGetValue(out ushort? nullableResult));
+            Assert.Equal(@ushort, nullableResult!.Value);
+
+
+            ushort? n = @ushort;
+            o = n;
+            value = new(o);
+
+            Assert.Equal(typeof(ushort), value.Type);
+            Assert.True(value.TryGetValue(out result));
+            Assert.Equal(@ushort, result);
+            Assert.True(value.TryGetValue(out nullableResult));
+            Assert.Equal(@ushort, nullableResult!.Value);
+        }
+
         [Fact]
         public void NullUShort()
         {

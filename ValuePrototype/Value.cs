@@ -488,6 +488,9 @@ namespace ValuePrototype
             }
         }
 
+        public static implicit operator Value(ArraySegment<byte> value) => new(value);
+        public static explicit operator ArraySegment<byte>(in Value value) => value.As<ArraySegment<byte>>();
+
         public Value(ArraySegment<char> segment)
         {
             this = default;
@@ -508,8 +511,10 @@ namespace ValuePrototype
                 _union.Segment = (segment.Offset, segment.Count);
             }
         }
-        #endregion
 
+        public static implicit operator Value(ArraySegment<char> value) => new(value);
+        public static explicit operator ArraySegment<char>(in Value value) => value.As<ArraySegment<char>>();
+        #endregion
 
         #region Decimal
         public static implicit operator Value(decimal value) => new(value);

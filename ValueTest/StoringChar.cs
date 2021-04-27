@@ -92,6 +92,32 @@ namespace ValueTest
             Assert.Equal(@char, (char?)value);
         }
 
+        [Theory]
+        [MemberData(nameof(CharData))]
+        public void BoxedChar(char @char)
+        {
+            char i = @char;
+            object o = i;
+            Value value = new(o);
+
+            Assert.Equal(typeof(char), value.Type);
+            Assert.True(value.TryGetValue(out char result));
+            Assert.Equal(@char, result);
+            Assert.True(value.TryGetValue(out char? nullableResult));
+            Assert.Equal(@char, nullableResult!.Value);
+
+
+            char? n = @char;
+            o = n;
+            value = new(o);
+
+            Assert.Equal(typeof(char), value.Type);
+            Assert.True(value.TryGetValue(out result));
+            Assert.Equal(@char, result);
+            Assert.True(value.TryGetValue(out nullableResult));
+            Assert.Equal(@char, nullableResult!.Value);
+        }
+
         [Fact]
         public void NullChar()
         {

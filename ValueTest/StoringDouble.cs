@@ -7,6 +7,7 @@ namespace ValueTest
     {
         public static TheoryData<double> DoubleData => new()
         {
+            { 0d },
             { 42d },
             { double.MaxValue },
             { double.MinValue },
@@ -93,6 +94,32 @@ namespace ValueTest
             Assert.Equal(@double, result);
 
             Assert.Equal(@double, (double)value);
+        }
+
+        [Theory]
+        [MemberData(nameof(DoubleData))]
+        public void BoxedDouble(double @double)
+        {
+            double i = @double;
+            object o = i;
+            Value value = new(o);
+
+            Assert.Equal(typeof(double), value.Type);
+            Assert.True(value.TryGetValue(out double result));
+            Assert.Equal(@double, result);
+            Assert.True(value.TryGetValue(out double? nullableResult));
+            Assert.Equal(@double, nullableResult!.Value);
+
+
+            double? n = @double;
+            o = n;
+            value = new(o);
+
+            Assert.Equal(typeof(double), value.Type);
+            Assert.True(value.TryGetValue(out result));
+            Assert.Equal(@double, result);
+            Assert.True(value.TryGetValue(out nullableResult));
+            Assert.Equal(@double, nullableResult!.Value);
         }
 
         [Fact]

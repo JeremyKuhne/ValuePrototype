@@ -7,6 +7,7 @@ namespace ValueTest
     {
         public static TheoryData<sbyte> SByteData => new()
         {
+            { 0 },
             { 42 },
             { sbyte.MaxValue },
             { sbyte.MinValue }

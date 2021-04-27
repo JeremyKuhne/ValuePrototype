@@ -92,6 +92,32 @@ namespace ValueTest
             Assert.Equal(@byte, (byte?)value);
         }
 
+        [Theory]
+        [MemberData(nameof(ByteData))]
+        public void BoxedByte(byte @byte)
+        {
+            byte i = @byte;
+            object o = i;
+            Value value = new(o);
+
+            Assert.Equal(typeof(byte), value.Type);
+            Assert.True(value.TryGetValue(out byte result));
+            Assert.Equal(@byte, result);
+            Assert.True(value.TryGetValue(out byte? nullableResult));
+            Assert.Equal(@byte, nullableResult!.Value);
+
+
+            byte? n = @byte;
+            o = n;
+            value = new(o);
+
+            Assert.Equal(typeof(byte), value.Type);
+            Assert.True(value.TryGetValue(out result));
+            Assert.Equal(@byte, result);
+            Assert.True(value.TryGetValue(out nullableResult));
+            Assert.Equal(@byte, nullableResult!.Value);
+        }
+
         [Fact]
         public void NullByte()
         {

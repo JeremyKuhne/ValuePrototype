@@ -7,6 +7,7 @@ namespace ValueTest
     {
         public static TheoryData<short> ShortData => new()
         {
+            { 0 },
             { 42 },
             { short.MaxValue },
             { short.MinValue }
@@ -90,6 +91,32 @@ namespace ValueTest
             Assert.Equal(@short, result);
 
             Assert.Equal(@short, (short?)value);
+        }
+
+        [Theory]
+        [MemberData(nameof(ShortData))]
+        public void BoxedShort(short @short)
+        {
+            short i = @short;
+            object o = i;
+            Value value = new(o);
+
+            Assert.Equal(typeof(short), value.Type);
+            Assert.True(value.TryGetValue(out short result));
+            Assert.Equal(@short, result);
+            Assert.True(value.TryGetValue(out short? nullableResult));
+            Assert.Equal(@short, nullableResult!.Value);
+
+
+            short? n = @short;
+            o = n;
+            value = new(o);
+
+            Assert.Equal(typeof(short), value.Type);
+            Assert.True(value.TryGetValue(out result));
+            Assert.Equal(@short, result);
+            Assert.True(value.TryGetValue(out nullableResult));
+            Assert.Equal(@short, nullableResult!.Value);
         }
 
         [Fact]

@@ -92,6 +92,32 @@ namespace ValueTest
             Assert.Equal(@ulong, (ulong?)value);
         }
 
+        [Theory]
+        [MemberData(nameof(ULongData))]
+        public void BoxedULong(ulong @ulong)
+        {
+            ulong i = @ulong;
+            object o = i;
+            Value value = new(o);
+
+            Assert.Equal(typeof(ulong), value.Type);
+            Assert.True(value.TryGetValue(out ulong result));
+            Assert.Equal(@ulong, result);
+            Assert.True(value.TryGetValue(out ulong? nullableResult));
+            Assert.Equal(@ulong, nullableResult!.Value);
+
+
+            ulong? n = @ulong;
+            o = n;
+            value = new(o);
+
+            Assert.Equal(typeof(ulong), value.Type);
+            Assert.True(value.TryGetValue(out result));
+            Assert.Equal(@ulong, result);
+            Assert.True(value.TryGetValue(out nullableResult));
+            Assert.Equal(@ulong, nullableResult!.Value);
+        }
+
         [Fact]
         public void NullULong()
         {

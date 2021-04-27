@@ -7,6 +7,7 @@ namespace ValueTest
     {
         public static TheoryData<float>FloatData => new()
         {
+            { 0f },
             { 42f },
             { float.MaxValue },
             { float.MinValue },
@@ -93,6 +94,32 @@ namespace ValueTest
             Assert.Equal(@float, result);
 
             Assert.Equal(@float, (float?)value);
+        }
+
+        [Theory]
+        [MemberData(nameof(FloatData))]
+        public void BoxedFloat(float @float)
+        {
+            float i = @float;
+            object o = i;
+            Value value = new(o);
+
+            Assert.Equal(typeof(float), value.Type);
+            Assert.True(value.TryGetValue(out float result));
+            Assert.Equal(@float, result);
+            Assert.True(value.TryGetValue(out float? nullableResult));
+            Assert.Equal(@float, nullableResult!.Value);
+
+
+            float? n = @float;
+            o = n;
+            value = new(o);
+
+            Assert.Equal(typeof(float), value.Type);
+            Assert.True(value.TryGetValue(out result));
+            Assert.Equal(@float, result);
+            Assert.True(value.TryGetValue(out nullableResult));
+            Assert.Equal(@float, nullableResult!.Value);
         }
 
         [Fact]

@@ -7,6 +7,7 @@ namespace ValueTest
     {
         public static TheoryData<long> LongData => new()
         {
+            { 0 },
             { 42 },
             { long.MaxValue },
             { long.MinValue }
@@ -90,6 +91,32 @@ namespace ValueTest
             Assert.Equal(@long, result);
 
             Assert.Equal(@long, (long?)value);
+        }
+
+        [Theory]
+        [MemberData(nameof(LongData))]
+        public void BoxedLong(long @long)
+        {
+            long i = @long;
+            object o = i;
+            Value value = new(o);
+
+            Assert.Equal(typeof(long), value.Type);
+            Assert.True(value.TryGetValue(out long result));
+            Assert.Equal(@long, result);
+            Assert.True(value.TryGetValue(out long? nullableResult));
+            Assert.Equal(@long, nullableResult!.Value);
+
+
+            long? n = @long;
+            o = n;
+            value = new(o);
+
+            Assert.Equal(typeof(long), value.Type);
+            Assert.True(value.TryGetValue(out result));
+            Assert.Equal(@long, result);
+            Assert.True(value.TryGetValue(out nullableResult));
+            Assert.Equal(@long, nullableResult!.Value);
         }
 
         [Fact]
