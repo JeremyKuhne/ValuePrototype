@@ -15,8 +15,15 @@ namespace ValuePrototype
             _union = default;
         }
 
+        public Value(Type type)
+        {
+            _object = new TypeBox(type);
+            _union = default;
+        }
+
         public Type? Type
         {
+            [SkipLocalsInit]
             get
             {
                 Type? type;
@@ -27,6 +34,14 @@ namespace ValuePrototype
                 else if (_object is TypeFlag typeFlag)
                 {
                     type = typeFlag.Type;
+                }
+                else if (_object is TypeBox)
+                {
+                    type = typeof(Type);
+                }
+                else if (_object is Type t)
+                {
+                    type = t;
                 }
                 else
                 {
@@ -560,7 +575,19 @@ namespace ValuePrototype
             if (typeof(T) == typeof(ArraySegment<byte>)) return new(Unsafe.As<T, ArraySegment<byte>>(ref Unsafe.AsRef(value)));
             if (typeof(T) == typeof(ArraySegment<char>)) return new(Unsafe.As<T, ArraySegment<char>>(ref Unsafe.AsRef(value)));
 
+            if (typeof(T).IsEnum && Unsafe.SizeOf<T>() <= sizeof(ulong))
+            {
+                return new Value(typeof(T), Unsafe.As<T, ulong>(ref value));
+            }
+
             return new Value(value);
+        }
+
+        private Value(object o, ulong u)
+        {
+            _union = default;
+            _object = o;
+            _union.UInt64 = u;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -757,10 +784,68 @@ namespace ValuePrototype
                 value = Unsafe.As<DateTimeOffset?, T>(ref Unsafe.AsRef((DateTimeOffset?)new DateTimeOffset(_union.Ticks, TimeSpan.Zero)));
                 result = true;
             }
+            else if (typeof(T) == typeof(Type))
+            {
+                // This case must come before the _object is T case as we use Type as a special flag and
+                // don't want to allow pulling said flag out when asking for Type.
+
+                if (_object is TypeBox box)
+                {
+                    // The value was actually a Type object.
+                    value = (T)(object)box.Value;
+                    result = true;
+                }
+                else
+                {
+                    value = default!;
+                }
+            }
             else if (_object is T t)
             {
                 value = t;
                 result = true;
+            }
+            else if (typeof(T).IsEnum && ReferenceEquals(_object, typeof(T)))
+            {
+                value = Unsafe.As<Union, T>(ref Unsafe.AsRef(_union));
+                result = true;
+            }
+            else if (typeof(T).IsValueType
+                && Nullable.GetUnderlyingType(typeof(T)) is Type underlyingType
+                && underlyingType.IsEnum
+                && ReferenceEquals(_object, underlyingType))
+            {
+                // Asked for a nullable enum and we've got that type.
+
+                // We've got multiple layouts, depending on the size of the enum backing field. We can't use the
+                // nullable itself (e.g. default(T)) as a template as it gets treated specially by the runtime.
+
+                int size = Unsafe.SizeOf<T>();
+
+                switch (size)
+                {
+                    case (2):
+                        value = Unsafe.As<NullableTemplate<byte>, T>(ref Unsafe.AsRef(new NullableTemplate<byte>(_union.Byte)));
+                        result = true;
+                        break;
+                    case (4):
+                        value = Unsafe.As<NullableTemplate<ushort>, T>(ref Unsafe.AsRef(new NullableTemplate<ushort>(_union.UInt16)));
+                        result = true;
+                        break;
+                    case (8):
+                        value = Unsafe.As<NullableTemplate<uint>, T>(ref Unsafe.AsRef(new NullableTemplate<uint>(_union.UInt32)));
+                        result = true;
+                        break;
+                    case (16):
+                        value = Unsafe.As<NullableTemplate<ulong>, T>(ref Unsafe.AsRef(new NullableTemplate<ulong>(_union.UInt64)));
+                        result = true;
+                        break;
+                    default:
+                        ThrowInvalidOperation();
+                        value = default!;
+                        result = false;
+                        break;
+                }
             }
             else
             {
