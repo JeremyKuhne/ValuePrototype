@@ -23,6 +23,7 @@ namespace ValuePrototype
 
         public Type? Type
         {
+            [SkipLocalsInit]
             get
             {
                 Type? type;
@@ -34,9 +35,13 @@ namespace ValuePrototype
                 {
                     type = typeFlag.Type;
                 }
-                else if (_object is TypeBox typeBox)
+                else if (_object is TypeBox)
                 {
                     type = typeof(Type);
+                }
+                else if (_object is Type t)
+                {
+                    type = t;
                 }
                 else
                 {
@@ -570,7 +575,19 @@ namespace ValuePrototype
             if (typeof(T) == typeof(ArraySegment<byte>)) return new(Unsafe.As<T, ArraySegment<byte>>(ref Unsafe.AsRef(value)));
             if (typeof(T) == typeof(ArraySegment<char>)) return new(Unsafe.As<T, ArraySegment<char>>(ref Unsafe.AsRef(value)));
 
+            if (typeof(T).IsEnum && Unsafe.SizeOf<T>() <= sizeof(ulong))
+            {
+                return new Value(typeof(T), Unsafe.As<T, ulong>(ref value));
+            }
+
             return new Value(value);
+        }
+
+        private Value(object o, ulong u)
+        {
+            _union = default;
+            _object = o;
+            _union.UInt64 = u;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -771,6 +788,11 @@ namespace ValuePrototype
             {
                 // The value was actually a Type object.
                 value = (T)(object)box.Value;
+                result = true;
+            }
+            else if (typeof(T).IsEnum && ReferenceEquals(_object, typeof(T)))
+            {
+                value = Unsafe.As<Union, T>(ref Unsafe.AsRef(_union));
                 result = true;
             }
             else if (_object is T t)
