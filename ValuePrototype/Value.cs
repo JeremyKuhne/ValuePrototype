@@ -786,6 +786,9 @@ namespace ValuePrototype
             }
             else if (typeof(T) == typeof(Type))
             {
+                // This case must come before the _object is T case as we use Type as a special flag and
+                // don't want to allow pulling said flag out when asking for Type.
+
                 if (_object is TypeBox box)
                 {
                     // The value was actually a Type object.
