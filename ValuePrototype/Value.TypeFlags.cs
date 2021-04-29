@@ -20,6 +20,7 @@ namespace ValuePrototype
             internal static readonly TypeFlag Double = new(typeof(double));
             internal static readonly TypeFlag DateTime = new(typeof(DateTime));
             internal static readonly TypeFlag DateTimeOffset = new(typeof(DateTimeOffset));
+            internal static readonly TypeFlag PackedDateTimeOffset = new(typeof(DateTimeOffset));
         }
     }
 }

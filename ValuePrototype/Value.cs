@@ -414,11 +414,17 @@ namespace ValuePrototype
         public Value(DateTimeOffset value)
         {
             this = default;
-            if (value.Offset.Ticks == 0)
+            TimeSpan offset = value.Offset;
+            if (offset.Ticks == 0)
             {
                 // This is a UTC time
                 _union.Ticks = value.Ticks;
                 _object = TypeFlags.DateTimeOffset;
+            }
+            else if (PackedDateTimeOffset.TryCreate(value, offset, out var packed))
+            {
+                _union.PackedDateTimeOffset = packed;
+                _object = TypeFlags.PackedDateTimeOffset;
             }
             else
             {
@@ -429,14 +435,13 @@ namespace ValuePrototype
         public Value(DateTimeOffset? value)
         {
             this = default;
-            if (value.HasValue && value.Value.Offset.Ticks == 0)
+            if (!value.HasValue)
             {
-                _object = TypeFlags.DateTimeOffset;
-                _union.Ticks = value.Value.Ticks;
+                _object = null;
             }
             else
             {
-                _object = value;
+                this = new(value.Value);
             }
         }
 
@@ -450,24 +455,18 @@ namespace ValuePrototype
         public Value(DateTime value)
         {
             this = default;
-            if (value.Kind == DateTimeKind.Utc)
-            {
-                _union.Ticks = value.Ticks;
-                _object = TypeFlags.DateTime;
-            }
-            else
-            {
-                _object = value;
-            }
+
+            _union.DateTime = value;
+            _object = TypeFlags.DateTime;
         }
 
         public Value(DateTime? value)
         {
             this = default;
-            if (value.HasValue && value.Value.Kind == DateTimeKind.Utc)
+            if (value.HasValue)
             {
                 _object = TypeFlags.DateTime;
-                _union.Ticks = value.Value.Ticks;
+                _union.DateTime = value.Value;
             }
             else
             {
@@ -614,12 +613,17 @@ namespace ValuePrototype
             }
             else if (typeof(T) == typeof(DateTime) && _object == TypeFlags.DateTime)
             {
-                value = Unsafe.As<DateTime, T>(ref Unsafe.AsRef(new DateTime(_union.Ticks, DateTimeKind.Utc)));
+                value = Unsafe.As<DateTime, T>(ref Unsafe.AsRef(_union.DateTime));
                 success = true;
             }
             else if (typeof(T) == typeof(DateTimeOffset) && _object == TypeFlags.DateTimeOffset)
             {
                 value = Unsafe.As<DateTimeOffset, T>(ref Unsafe.AsRef(new DateTimeOffset(_union.Ticks, TimeSpan.Zero)));
+                success = true;
+            }
+            else if (typeof(T) == typeof(DateTimeOffset) && _object == TypeFlags.PackedDateTimeOffset)
+            {
+                value = Unsafe.As<DateTimeOffset, T>(ref Unsafe.AsRef(_union.PackedDateTimeOffset.Extract()));
                 success = true;
             }
             else
@@ -776,12 +780,17 @@ namespace ValuePrototype
             }
             else if (typeof(T) == typeof(DateTime?) && _object == TypeFlags.DateTime)
             {
-                value = Unsafe.As<DateTime?, T>(ref Unsafe.AsRef((DateTime?)new DateTime(_union.Ticks, DateTimeKind.Utc)));
+                value = Unsafe.As<DateTime?, T>(ref Unsafe.AsRef((DateTime?)_union.DateTime));
                 result = true;
             }
             else if (typeof(T) == typeof(DateTimeOffset?) && _object == TypeFlags.DateTimeOffset)
             {
                 value = Unsafe.As<DateTimeOffset?, T>(ref Unsafe.AsRef((DateTimeOffset?)new DateTimeOffset(_union.Ticks, TimeSpan.Zero)));
+                result = true;
+            }
+            else if (typeof(T) == typeof(DateTimeOffset?) && _object == TypeFlags.PackedDateTimeOffset)
+            {
+                value = Unsafe.As<DateTimeOffset?, T>(ref Unsafe.AsRef((DateTimeOffset?)_union.PackedDateTimeOffset.Extract()));
                 result = true;
             }
             else if (typeof(T) == typeof(Type))
