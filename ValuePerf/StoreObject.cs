@@ -4,6 +4,7 @@ using ValuePrototype;
 
 namespace ValuePerf
 {
+    [DisassemblyDiagnoser]
     public class StoreObject
     {
         private static A s_A = new();

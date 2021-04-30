@@ -624,15 +624,19 @@ namespace ValuePrototype
                 value = Unsafe.As<DateTimeOffset, T>(ref Unsafe.AsRef(_union.PackedDateTimeOffset.Extract()));
                 success = true;
             }
+            else if (typeof(T).IsValueType)
+            {
+                success = TryGetValueSlow(out value);
+            }
             else
             {
-                success = TryGetSlow(out value);
+                success = TryGetObjectSlow(out value);
             }
 
             return success;
         }
 
-        private bool TryGetSlow<T>(out T value)
+        private bool TryGetValueSlow<T>(out T value)
         {
             // Single return has a significant performance benefit.
 
@@ -642,7 +646,7 @@ namespace ValuePrototype
             {
                 // A null is stored, it can only be assigned to a reference type or nullable.
                 value = default!;
-                result = !typeof(T).IsValueType || Nullable.GetUnderlyingType(typeof(T)) is not null;
+                result = Nullable.GetUnderlyingType(typeof(T)) is not null;
             }
             else if (typeof(T) == typeof(ArraySegment<byte>))
             {
@@ -674,34 +678,6 @@ namespace ValuePrototype
                 else
                 {
                     value = default!;
-                }
-            }
-            else if (typeof(T) == typeof(char[]))
-            {
-                if (_union.UInt64 == 0 && _object is char[] charArray)
-                {
-                    value = (T)_object;
-                    result = true;
-                }
-                else
-                {
-                    // Don't allow "implicit" cast to array if we stored a segment.
-                    value = default!;
-                    result = false;
-                }
-            }
-            else if (typeof(T) == typeof(byte[]))
-            {
-                if (_union.UInt64 == 0 && _object is byte[])
-                {
-                    value = (T)_object;
-                    result = true;
-                }
-                else
-                {
-                    // Don't allow "implicit" cast to array if we stored a segment.
-                    value = default!;
-                    result = false;
                 }
             }
             else if (typeof(T) == typeof(int?) && _object == TypeFlags.Int32)
@@ -779,6 +755,100 @@ namespace ValuePrototype
                 value = Unsafe.As<DateTimeOffset?, T>(ref Unsafe.AsRef((DateTimeOffset?)_union.PackedDateTimeOffset.Extract()));
                 result = true;
             }
+            else if (_object is T t)
+            {
+                value = t;
+                result = true;
+            }
+            else if (typeof(T).IsEnum && ReferenceEquals(_object, typeof(T)))
+            {
+                value = Unsafe.As<Union, T>(ref Unsafe.AsRef(_union));
+                result = true;
+            }
+            else if (typeof(T).IsValueType
+                && Nullable.GetUnderlyingType(typeof(T)) is Type underlyingType
+                && underlyingType.IsEnum
+                && ReferenceEquals(_object, underlyingType))
+            {
+                // Asked for a nullable enum and we've got that type.
+
+                // We've got multiple layouts, depending on the size of the enum backing field. We can't use the
+                // nullable itself (e.g. default(T)) as a template as it gets treated specially by the runtime.
+
+                int size = Unsafe.SizeOf<T>();
+
+                switch (size)
+                {
+                    case (2):
+                        value = Unsafe.As<NullableTemplate<byte>, T>(ref Unsafe.AsRef(new NullableTemplate<byte>(_union.Byte)));
+                        result = true;
+                        break;
+                    case (4):
+                        value = Unsafe.As<NullableTemplate<ushort>, T>(ref Unsafe.AsRef(new NullableTemplate<ushort>(_union.UInt16)));
+                        result = true;
+                        break;
+                    case (8):
+                        value = Unsafe.As<NullableTemplate<uint>, T>(ref Unsafe.AsRef(new NullableTemplate<uint>(_union.UInt32)));
+                        result = true;
+                        break;
+                    case (16):
+                        value = Unsafe.As<NullableTemplate<ulong>, T>(ref Unsafe.AsRef(new NullableTemplate<ulong>(_union.UInt64)));
+                        result = true;
+                        break;
+                    default:
+                        ThrowInvalidOperation();
+                        value = default!;
+                        result = false;
+                        break;
+                }
+            }
+            else
+            {
+                value = default!;
+                result = false;
+            }
+
+            return result;
+        }
+
+        private bool TryGetObjectSlow<T>(out T value)
+        {
+            // Single return has a significant performance benefit.
+
+            bool result = false;
+
+            if (_object is null)
+            {
+                value = default!;
+            }
+            else if (typeof(T) == typeof(char[]))
+            {
+                if (_union.UInt64 == 0 && _object is char[])
+                {
+                    value = (T)_object;
+                    result = true;
+                }
+                else
+                {
+                    // Don't allow "implicit" cast to array if we stored a segment.
+                    value = default!;
+                    result = false;
+                }
+            }
+            else if (typeof(T) == typeof(byte[]))
+            {
+                if (_union.UInt64 == 0 && _object is byte[])
+                {
+                    value = (T)_object;
+                    result = true;
+                }
+                else
+                {
+                    // Don't allow "implicit" cast to array if we stored a segment.
+                    value = default!;
+                    result = false;
+                }
+            }
             else if (typeof(T) == typeof(Type))
             {
                 // This case must come before the _object is T case as we use Type as a special flag and
@@ -833,48 +903,6 @@ namespace ValuePrototype
             {
                 value = t;
                 result = true;
-            }
-            else if (typeof(T).IsEnum && ReferenceEquals(_object, typeof(T)))
-            {
-                value = Unsafe.As<Union, T>(ref Unsafe.AsRef(_union));
-                result = true;
-            }
-            else if (typeof(T).IsValueType
-                && Nullable.GetUnderlyingType(typeof(T)) is Type underlyingType
-                && underlyingType.IsEnum
-                && ReferenceEquals(_object, underlyingType))
-            {
-                // Asked for a nullable enum and we've got that type.
-
-                // We've got multiple layouts, depending on the size of the enum backing field. We can't use the
-                // nullable itself (e.g. default(T)) as a template as it gets treated specially by the runtime.
-
-                int size = Unsafe.SizeOf<T>();
-
-                switch (size)
-                {
-                    case (2):
-                        value = Unsafe.As<NullableTemplate<byte>, T>(ref Unsafe.AsRef(new NullableTemplate<byte>(_union.Byte)));
-                        result = true;
-                        break;
-                    case (4):
-                        value = Unsafe.As<NullableTemplate<ushort>, T>(ref Unsafe.AsRef(new NullableTemplate<ushort>(_union.UInt16)));
-                        result = true;
-                        break;
-                    case (8):
-                        value = Unsafe.As<NullableTemplate<uint>, T>(ref Unsafe.AsRef(new NullableTemplate<uint>(_union.UInt32)));
-                        result = true;
-                        break;
-                    case (16):
-                        value = Unsafe.As<NullableTemplate<ulong>, T>(ref Unsafe.AsRef(new NullableTemplate<ulong>(_union.UInt64)));
-                        result = true;
-                        break;
-                    default:
-                        ThrowInvalidOperation();
-                        value = default!;
-                        result = false;
-                        break;
-                }
             }
             else
             {
