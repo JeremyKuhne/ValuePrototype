@@ -49,12 +49,11 @@ namespace ValuePrototype
                     if (_union.UInt64 != 0 && type.IsArray)
                     {
                         // We have an ArraySegment
-                        Type? elementType = type.GetElementType();
-                        if (elementType == typeof(byte))
+                        if (type == typeof(byte[]))
                         {
                             type = typeof(ArraySegment<byte>);
                         }
-                        else if (elementType == typeof(char))
+                        else if (type == typeof(char[]))
                         {
                             type = typeof(ArraySegment<char>);
                         }
@@ -490,13 +489,13 @@ namespace ValuePrototype
                 return;
             }
 
+            _object = array;
             if (segment.Offset == 0 && segment.Count == 0)
             {
-                _object = new EmptySegment(array, typeof(ArraySegment<byte>));
+                _union.UInt64 = ulong.MaxValue;
             }
             else
             {
-                _object = array;
                 _union.Segment = (segment.Offset, segment.Count);
             }
         }
@@ -514,13 +513,13 @@ namespace ValuePrototype
                 return;
             }
 
+            _object = array;
             if (segment.Offset == 0 && segment.Count == 0)
             {
-                _object = new EmptySegment(array, typeof(ArraySegment<char>));
+                _union.UInt64 = ulong.MaxValue;
             }
             else
             {
-                _object = array;
                 _union.Segment = (segment.Offset, segment.Count);
             }
         }
@@ -647,22 +646,12 @@ namespace ValuePrototype
             }
             else if (typeof(T) == typeof(ArraySegment<byte>))
             {
-                if (_object is byte[] byteArray)
+                ulong bits = _union.UInt64;
+                if (bits != 0 && _object is byte[] byteArray)
                 {
-                    if (_union.UInt64 != 0)
-                    {
-                        ArraySegment<byte> segment = new(byteArray, _union.Segment.Offset, _union.Segment.Count);
-                        value = Unsafe.As<ArraySegment<byte>, T>(ref segment);
-                        result = true;
-                    }
-                    else
-                    {
-                        value = default!;
-                    }
-                }
-                else if (_object is EmptySegment emptySegment && emptySegment.Array is byte[] emptyArray)
-                {
-                    ArraySegment<byte> segment = new(emptyArray, 0, 0);
+                    ArraySegment<byte> segment = bits != ulong.MaxValue
+                        ? new(byteArray, _union.Segment.Offset, _union.Segment.Count)
+                        : new(byteArray, 0, 0);
                     value = Unsafe.As<ArraySegment<byte>, T>(ref segment);
                     result = true;
                 }
@@ -673,22 +662,12 @@ namespace ValuePrototype
             }
             else if (typeof(T) == typeof(ArraySegment<char>))
             {
-                if (_object is char[] charArray)
+                ulong bits = _union.UInt64;
+                if (bits != 0 && _object is char[] charArray)
                 {
-                    if (_union.UInt64 != 0)
-                    {
-                        ArraySegment<char> segment = new(charArray, _union.Segment.Offset, _union.Segment.Count);
-                        value = Unsafe.As<ArraySegment<char>, T>(ref segment);
-                        result = true;
-                    }
-                    else
-                    {
-                        value = default!;
-                    }
-                }
-                else if (_object is EmptySegment emptySegment && emptySegment.Array is char[] emptyArray)
-                {
-                    ArraySegment<char> segment = new(emptyArray, 0, 0);
+                    ArraySegment<char> segment = bits != ulong.MaxValue
+                        ? new(charArray, _union.Segment.Offset, _union.Segment.Count)
+                        : new(charArray, 0, 0);
                     value = Unsafe.As<ArraySegment<char>, T>(ref segment);
                     result = true;
                 }
@@ -697,9 +676,9 @@ namespace ValuePrototype
                     value = default!;
                 }
             }
-            else if (typeof(T) == typeof(char[]) && _object is char[] charArray)
+            else if (typeof(T) == typeof(char[]))
             {
-                if (_union.UInt64 == 0)
+                if (_union.UInt64 == 0 && _object is char[] charArray)
                 {
                     value = (T)_object;
                     result = true;
@@ -711,9 +690,9 @@ namespace ValuePrototype
                     result = false;
                 }
             }
-            else if (typeof(T) == typeof(byte[]) && _object is byte[] byteArray)
+            else if (typeof(T) == typeof(byte[]))
             {
-                if (_union.UInt64 == 0)
+                if (_union.UInt64 == 0 && _object is byte[])
                 {
                     value = (T)_object;
                     result = true;
@@ -832,12 +811,16 @@ namespace ValuePrototype
                 }
                 else if (_union.UInt64 != 0 && _object is char[] chars)
                 {
-                    value = (T)(object)new ArraySegment<char>(chars, _union.Segment.Offset, _union.Segment.Count);
+                    value = _union.UInt64 != ulong.MaxValue
+                        ? (T)(object)new ArraySegment<char>(chars, _union.Segment.Offset, _union.Segment.Count)
+                        : (T)(object)new ArraySegment<char>(chars, 0, 0);
                     result = true;
                 }
                 else if (_union.UInt64 != 0 && _object is byte[] bytes)
                 {
-                    value = (T)(object)new ArraySegment<byte>(bytes, _union.Segment.Offset, _union.Segment.Count);
+                    value = _union.UInt64 != ulong.MaxValue
+                        ? (T)(object)new ArraySegment<byte>(bytes, _union.Segment.Offset, _union.Segment.Count)
+                        : (T)(object)new ArraySegment<byte>(bytes, 0, 0);
                     result = true;
                 }
                 else
