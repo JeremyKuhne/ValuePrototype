@@ -15,12 +15,9 @@ namespace ValueTest
             value = Value.Create(b);
             Assert.Equal(typeof(byte[]), value.Type);
             Assert.Same(b, value.As<byte[]>());
+            Assert.Equal(b, (byte[])value.As<object>());
 
-            ArraySegment<byte> segment = value.As<ArraySegment<byte>>();
-            Assert.Same(b, segment.Array);
-
-            Assert.Equal(0, segment.Offset);
-            Assert.Equal(b.Length, segment.Count);
+            Assert.Throws<InvalidCastException>(() => value.As<ArraySegment<byte>>());
         }
 
         [Fact]
@@ -32,12 +29,9 @@ namespace ValueTest
             value = Value.Create(b);
             Assert.Equal(typeof(char[]), value.Type);
             Assert.Same(b, value.As<char[]>());
+            Assert.Equal(b, (char[])value.As<object>());
 
-            ArraySegment<char> segment = value.As<ArraySegment<char>>();
-            Assert.Same(b, segment.Array);
-
-            Assert.Equal(0, segment.Offset);
-            Assert.Equal(b.Length, segment.Count);
+            Assert.Throws<InvalidCastException>(() => value.As<ArraySegment<char>>());
         }
 
         [Fact]
@@ -50,18 +44,21 @@ namespace ValueTest
             value = Value.Create(segment);
             Assert.Equal(typeof(ArraySegment<byte>), value.Type);
             Assert.Equal(segment, value.As<ArraySegment<byte>>());
-            Assert.Same(b, value.As<byte[]>());
+            Assert.Equal(segment, (ArraySegment<byte>)value.As<object>());
+            Assert.Throws<InvalidCastException>(() => value.As<byte[]>());
 
             segment = new(b, 0, 0);
             value = Value.Create(segment);
             Assert.Equal(typeof(ArraySegment<byte>), value.Type);
             Assert.Equal(segment, value.As<ArraySegment<byte>>());
+            Assert.Equal(segment, (ArraySegment<byte>)value.As<object>());
             Assert.Throws<InvalidCastException>(() => value.As<byte[]>());
 
             segment = new(b, 1, 1);
             value = Value.Create(segment);
             Assert.Equal(typeof(ArraySegment<byte>), value.Type);
             Assert.Equal(segment, value.As<ArraySegment<byte>>());
+            Assert.Equal(segment, (ArraySegment<byte>)value.As<object>());
             Assert.Throws<InvalidCastException>(() => value.As<byte[]>());
         }
 
@@ -75,18 +72,21 @@ namespace ValueTest
             value = Value.Create(segment);
             Assert.Equal(typeof(ArraySegment<char>), value.Type);
             Assert.Equal(segment, value.As<ArraySegment<char>>());
-            Assert.Same(b, value.As<char[]>());
+            Assert.Equal(segment, (ArraySegment<char>)value.As<object>());
+            Assert.Throws<InvalidCastException>(() => value.As<char[]>());
 
             segment = new(b, 0, 0);
             value = Value.Create(segment);
             Assert.Equal(typeof(ArraySegment<char>), value.Type);
             Assert.Equal(segment, value.As<ArraySegment<char>>());
+            Assert.Equal(segment, (ArraySegment<char>)value.As<object>());
             Assert.Throws<InvalidCastException>(() => value.As<char[]>());
 
             segment = new(b, 1, 1);
             value = Value.Create(segment);
             Assert.Equal(typeof(ArraySegment<char>), value.Type);
             Assert.Equal(segment, value.As<ArraySegment<char>>());
+            Assert.Equal(segment, (ArraySegment<char>)value.As<object>());
             Assert.Throws<InvalidCastException>(() => value.As<char[]>());
         }
     }

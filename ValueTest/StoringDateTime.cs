@@ -79,5 +79,21 @@ namespace ValueTest
             Assert.Equal(source, value.As<DateTime?>());
             Assert.False(value.As<DateTime?>().HasValue);
         }
+
+        [Theory]
+        [MemberData(nameof(DateTimeData))]
+        public void OutAsObject(DateTime @DateTime)
+        {
+            Value value = new(@DateTime);
+            object o = value.As<object>();
+            Assert.Equal(typeof(DateTime), o.GetType());
+            Assert.Equal(@DateTime, (DateTime)o);
+
+            DateTime? n = @DateTime;
+            value = new(n);
+            o = value.As<object>();
+            Assert.Equal(typeof(DateTime), o.GetType());
+            Assert.Equal(@DateTime, (DateTime)o);
+        }
     }
 }

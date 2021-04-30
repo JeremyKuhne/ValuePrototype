@@ -131,5 +131,21 @@ namespace ValueTest
             Assert.Equal(source, value.As<float?>());
             Assert.False(value.As<float?>().HasValue);
         }
+
+        [Theory]
+        [MemberData(nameof(FloatData))]
+        public void OutAsObject(float @float)
+        {
+            Value value = new(@float);
+            object o = value.As<object>();
+            Assert.Equal(typeof(float), o.GetType());
+            Assert.Equal(@float, (float)o);
+
+            float? n = @float;
+            value = new(n);
+            o = value.As<object>();
+            Assert.Equal(typeof(float), o.GetType());
+            Assert.Equal(@float, (float)o);
+        }
     }
 }

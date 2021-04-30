@@ -76,5 +76,21 @@ namespace ValueTest
             Assert.Equal(source, value.As<decimal?>());
             Assert.False(value.As<decimal?>().HasValue);
         }
+
+        [Theory]
+        [MemberData(nameof(DecimalData))]
+        public void OutAsObject(decimal @decimal)
+        {
+            Value value = new(@decimal);
+            object o = value.As<object>();
+            Assert.Equal(typeof(decimal), o.GetType());
+            Assert.Equal(@decimal, (decimal)o);
+
+            decimal? n = @decimal;
+            value = new(n);
+            o = value.As<object>();
+            Assert.Equal(typeof(decimal), o.GetType());
+            Assert.Equal(@decimal, (decimal)o);
+        }
     }
 }

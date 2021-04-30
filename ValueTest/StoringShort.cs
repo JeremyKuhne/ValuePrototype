@@ -128,5 +128,21 @@ namespace ValueTest
             Assert.Equal(source, value.As<short?>());
             Assert.False(value.As<short?>().HasValue);
         }
+
+        [Theory]
+        [MemberData(nameof(ShortData))]
+        public void OutAsObject(short @short)
+        {
+            Value value = new(@short);
+            object o = value.As<object>();
+            Assert.Equal(typeof(short), o.GetType());
+            Assert.Equal(@short, (short)o);
+
+            short? n = @short;
+            value = new(n);
+            o = value.As<object>();
+            Assert.Equal(typeof(short), o.GetType());
+            Assert.Equal(@short, (short)o);
+        }
     }
 }

@@ -127,5 +127,21 @@ namespace ValueTest
             Assert.Equal(source, value.As<int?>());
             Assert.False(value.As<int?>().HasValue);
         }
+
+        [Theory]
+        [MemberData(nameof(IntData))]
+        public void OutAsObject(int @int)
+        {
+            Value value = new(@int);
+            object o = value.As<object>();
+            Assert.Equal(typeof(int), o.GetType());
+            Assert.Equal(@int, (int)o);
+
+            int? n = @int;
+            value = new(n);
+            o = value.As<object>();
+            Assert.Equal(typeof(int), o.GetType());
+            Assert.Equal(@int, (int)o);
+        }
     }
 }

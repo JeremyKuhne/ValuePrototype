@@ -127,5 +127,21 @@ namespace ValueTest
             Assert.Equal(source, value.As<char?>());
             Assert.False(value.As<char?>().HasValue);
         }
+
+        [Theory]
+        [MemberData(nameof(CharData))]
+        public void OutAsObject(char @char)
+        {
+            Value value = new(@char);
+            object o = value.As<object>();
+            Assert.Equal(typeof(char), o.GetType());
+            Assert.Equal(@char, (char)o);
+
+            char? n = @char;
+            value = new(n);
+            o = value.As<object>();
+            Assert.Equal(typeof(char), o.GetType());
+            Assert.Equal(@char, (char)o);
+        }
     }
 }

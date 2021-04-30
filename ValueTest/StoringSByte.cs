@@ -102,5 +102,21 @@ namespace ValueTest
             Assert.Equal(source, value.As<sbyte?>());
             Assert.False(value.As<sbyte?>().HasValue);
         }
+
+        [Theory]
+        [MemberData(nameof(SByteData))]
+        public void OutAsObject(sbyte @sbyte)
+        {
+            Value value = new(@sbyte);
+            object o = value.As<object>();
+            Assert.Equal(typeof(sbyte), o.GetType());
+            Assert.Equal(@sbyte, (sbyte)o);
+
+            sbyte? n = @sbyte;
+            value = new(n);
+            o = value.As<object>();
+            Assert.Equal(typeof(sbyte), o.GetType());
+            Assert.Equal(@sbyte, (sbyte)o);
+        }
     }
 }

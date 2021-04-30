@@ -127,5 +127,21 @@ namespace ValueTest
             Assert.Equal(source, value.As<byte?>());
             Assert.False(value.As<byte?>().HasValue);
         }
+
+        [Theory]
+        [MemberData(nameof(ByteData))]
+        public void OutAsObject(byte @byte)
+        {
+            Value value = new(@byte);
+            object o = value.As<object>();
+            Assert.Equal(typeof(byte), o.GetType());
+            Assert.Equal(@byte, (byte)o);
+
+            byte? n = @byte;
+            value = new(n);
+            o = value.As<object>();
+            Assert.Equal(typeof(byte), o.GetType());
+            Assert.Equal(@byte, (byte)o);
+        }
     }
 }

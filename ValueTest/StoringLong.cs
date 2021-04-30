@@ -128,5 +128,21 @@ namespace ValueTest
             Assert.Equal(source, value.As<long?>());
             Assert.False(value.As<long?>().HasValue);
         }
+
+        [Theory]
+        [MemberData(nameof(LongData))]
+        public void OutAsObject(long @long)
+        {
+            Value value = new(@long);
+            object o = value.As<object>();
+            Assert.Equal(typeof(long), o.GetType());
+            Assert.Equal(@long, (long)o);
+
+            long? n = @long;
+            value = new(n);
+            o = value.As<object>();
+            Assert.Equal(typeof(long), o.GetType());
+            Assert.Equal(@long, (long)o);
+        }
     }
 }

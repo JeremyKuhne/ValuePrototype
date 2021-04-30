@@ -155,5 +155,21 @@ namespace ValueTest
             Assert.Equal(source, value.As<bool?>());
             Assert.False(value.As<bool?>().HasValue);
         }
+
+        [Theory]
+        [MemberData(nameof(BoolData))]
+        public void OutAsObject(bool @bool)
+        {
+            Value value = new(@bool);
+            object o = value.As<object>();
+            Assert.Equal(typeof(bool), o.GetType());
+            Assert.Equal(@bool, (bool)o);
+
+            bool? n = @bool;
+            value = new(n);
+            o = value.As<object>();
+            Assert.Equal(typeof(bool), o.GetType());
+            Assert.Equal(@bool, (bool)o);
+        }
     }
 }

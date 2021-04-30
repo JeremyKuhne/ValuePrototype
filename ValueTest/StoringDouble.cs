@@ -131,5 +131,21 @@ namespace ValueTest
             Assert.Equal(source, value.As<double?>());
             Assert.False(value.As<double?>().HasValue);
         }
+
+        [Theory]
+        [MemberData(nameof(DoubleData))]
+        public void OutAsObject(double @double)
+        {
+            Value value = new(@double);
+            object o = value.As<object>();
+            Assert.Equal(typeof(double), o.GetType());
+            Assert.Equal(@double, (double)o);
+
+            double? n = @double;
+            value = new(n);
+            o = value.As<object>();
+            Assert.Equal(typeof(double), o.GetType());
+            Assert.Equal(@double, (double)o);
+        }
     }
 }

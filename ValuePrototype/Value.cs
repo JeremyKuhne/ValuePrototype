@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace ValuePrototype
@@ -8,6 +9,8 @@ namespace ValuePrototype
     {
         private readonly Union _union;
         private readonly object? _object;
+
+        private static readonly MethodInfo s_asMethod = typeof(Value).GetMethod(nameof(As))!;
 
         public Value(object? value)
         {
@@ -34,10 +37,6 @@ namespace ValuePrototype
                 else if (_object is TypeFlag typeFlag)
                 {
                     type = typeFlag.Type;
-                }
-                else if (_object is TypeBox)
-                {
-                    type = typeof(Type);
                 }
                 else if (_object is Type t)
                 {
@@ -650,12 +649,16 @@ namespace ValuePrototype
             {
                 if (_object is byte[] byteArray)
                 {
-                    bool hasSegment = _union.UInt64 != 0;
-                    ArraySegment<byte> segment = hasSegment
-                        ? new(byteArray, _union.Segment.Offset, _union.Segment.Count)
-                        : new(byteArray);
-                    value = Unsafe.As<ArraySegment<byte>, T>(ref segment);
-                    result = true;
+                    if (_union.UInt64 != 0)
+                    {
+                        ArraySegment<byte> segment = new(byteArray, _union.Segment.Offset, _union.Segment.Count);
+                        value = Unsafe.As<ArraySegment<byte>, T>(ref segment);
+                        result = true;
+                    }
+                    else
+                    {
+                        value = default!;
+                    }
                 }
                 else if (_object is EmptySegment emptySegment && emptySegment.Array is byte[] emptyArray)
                 {
@@ -672,12 +675,16 @@ namespace ValuePrototype
             {
                 if (_object is char[] charArray)
                 {
-                    bool hasSegment = _union.UInt64 != 0;
-                    ArraySegment<char> segment = hasSegment
-                        ? new(charArray, _union.Segment.Offset, _union.Segment.Count)
-                        : new(charArray);
-                    value = Unsafe.As<ArraySegment<char>, T>(ref segment);
-                    result = true;
+                    if (_union.UInt64 != 0)
+                    {
+                        ArraySegment<char> segment = new(charArray, _union.Segment.Offset, _union.Segment.Count);
+                        value = Unsafe.As<ArraySegment<char>, T>(ref segment);
+                        result = true;
+                    }
+                    else
+                    {
+                        value = default!;
+                    }
                 }
                 else if (_object is EmptySegment emptySegment && emptySegment.Array is char[] emptyArray)
                 {
@@ -692,7 +699,7 @@ namespace ValuePrototype
             }
             else if (typeof(T) == typeof(char[]) && _object is char[] charArray)
             {
-                if (_union.UInt64 == 0 || _union.Segment.Count == charArray.Length)
+                if (_union.UInt64 == 0)
                 {
                     value = (T)_object;
                     result = true;
@@ -706,7 +713,7 @@ namespace ValuePrototype
             }
             else if (typeof(T) == typeof(byte[]) && _object is byte[] byteArray)
             {
-                if (_union.UInt64 == 0 || _union.Segment.Count == byteArray.Length)
+                if (_union.UInt64 == 0)
                 {
                     value = (T)_object;
                     result = true;
@@ -807,6 +814,36 @@ namespace ValuePrototype
                 else
                 {
                     value = default!;
+                }
+            }
+            else if (typeof(T) == typeof(object))
+            {
+                // This case must also come before the _object is T case to make sure we don't leak our flags.
+                if (_object is TypeFlag flag)
+                {
+                    value = (T)s_asMethod.MakeGenericMethod(flag.Type).Invoke(this, null)!;
+                    result = true;
+                }
+                else if (_object is Type type)
+                {
+                    Debug.Assert(type.IsEnum);
+                    value = (T)s_asMethod.MakeGenericMethod(type).Invoke(this, null)!;
+                    result = true;
+                }
+                else if (_union.UInt64 != 0 && _object is char[] chars)
+                {
+                    value = (T)(object)new ArraySegment<char>(chars, _union.Segment.Offset, _union.Segment.Count);
+                    result = true;
+                }
+                else if (_union.UInt64 != 0 && _object is byte[] bytes)
+                {
+                    value = (T)(object)new ArraySegment<byte>(bytes, _union.Segment.Offset, _union.Segment.Count);
+                    result = true;
+                }
+                else
+                {
+                    value = (T)_object;
+                    result = true;
                 }
             }
             else if (_object is T t)

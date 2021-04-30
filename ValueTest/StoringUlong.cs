@@ -127,5 +127,21 @@ namespace ValueTest
             Assert.Equal(source, value.As<ulong?>());
             Assert.False(value.As<ulong?>().HasValue);
         }
+
+        [Theory]
+        [MemberData(nameof(ULongData))]
+        public void OutAsObject(ulong @ulong)
+        {
+            Value value = new(@ulong);
+            object o = value.As<object>();
+            Assert.Equal(typeof(ulong), o.GetType());
+            Assert.Equal(@ulong, (ulong)o);
+
+            ulong? n = @ulong;
+            value = new(n);
+            o = value.As<object>();
+            Assert.Equal(typeof(ulong), o.GetType());
+            Assert.Equal(@ulong, (ulong)o);
+        }
     }
 }
