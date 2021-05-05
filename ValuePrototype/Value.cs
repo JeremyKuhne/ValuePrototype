@@ -10,17 +10,9 @@ namespace ValuePrototype
         private readonly Union _union;
         private readonly object? _object;
 
-        private static readonly MethodInfo s_asMethod = typeof(Value).GetMethod(nameof(As))!;
-
         public Value(object? value)
         {
             _object = value;
-            _union = default;
-        }
-
-        public Value(Type type)
-        {
-            _object = new TypeBox(type);
             _union = default;
         }
 
@@ -37,10 +29,6 @@ namespace ValuePrototype
                 else if (_object is TypeFlag typeFlag)
                 {
                     type = typeFlag.Type;
-                }
-                else if (_object is Type t)
-                {
-                    type = t;
                 }
                 else
                 {
@@ -572,17 +560,19 @@ namespace ValuePrototype
             if (typeof(T) == typeof(ArraySegment<byte>)) return new(Unsafe.As<T, ArraySegment<byte>>(ref Unsafe.AsRef(value)));
             if (typeof(T) == typeof(ArraySegment<char>)) return new(Unsafe.As<T, ArraySegment<char>>(ref Unsafe.AsRef(value)));
 
-            if (typeof(T).IsEnum && Unsafe.SizeOf<T>() <= sizeof(ulong))
+            if (typeof(T).IsEnum)
             {
-                return new Value(typeof(T), Unsafe.As<T, ulong>(ref value));
+                Debug.Assert(Unsafe.SizeOf<T>() <= sizeof(ulong));
+                return new Value(StraightCastFlag<T>.Instance, Unsafe.As<T, ulong>(ref value));
             }
 
             return new Value(value);
         }
 
+        [SkipLocalsInit]
         private Value(object o, ulong u)
         {
-            _union = default;
+            Unsafe.SkipInit(out _union);
             _object = o;
             _union.UInt64 = u;
         }
@@ -647,6 +637,16 @@ namespace ValuePrototype
                 // A null is stored, it can only be assigned to a reference type or nullable.
                 value = default!;
                 result = Nullable.GetUnderlyingType(typeof(T)) is not null;
+            }
+            else if (typeof(T).IsEnum && _object is TypeFlag<T> typeFlag)
+            {
+                value = typeFlag.To(in this);
+                result = true;
+            }
+            else if (_object is T t)
+            {
+                value = t;
+                result = true;
             }
             else if (typeof(T) == typeof(ArraySegment<byte>))
             {
@@ -755,20 +755,10 @@ namespace ValuePrototype
                 value = Unsafe.As<DateTimeOffset?, T>(ref Unsafe.AsRef((DateTimeOffset?)_union.PackedDateTimeOffset.Extract()));
                 result = true;
             }
-            else if (_object is T t)
-            {
-                value = t;
-                result = true;
-            }
-            else if (typeof(T).IsEnum && ReferenceEquals(_object, typeof(T)))
-            {
-                value = Unsafe.As<Union, T>(ref Unsafe.AsRef(_union));
-                result = true;
-            }
-            else if (typeof(T).IsValueType
-                && Nullable.GetUnderlyingType(typeof(T)) is Type underlyingType
+            else if (Nullable.GetUnderlyingType(typeof(T)) is Type underlyingType
                 && underlyingType.IsEnum
-                && ReferenceEquals(_object, underlyingType))
+                && _object is TypeFlag underlyingTypeFlag
+                && underlyingTypeFlag.Type == underlyingType)
             {
                 // Asked for a nullable enum and we've got that type.
 
@@ -849,34 +839,12 @@ namespace ValuePrototype
                     result = false;
                 }
             }
-            else if (typeof(T) == typeof(Type))
-            {
-                // This case must come before the _object is T case as we use Type as a special flag and
-                // don't want to allow pulling said flag out when asking for Type.
-
-                if (_object is TypeBox box)
-                {
-                    // The value was actually a Type object.
-                    value = (T)(object)box.Value;
-                    result = true;
-                }
-                else
-                {
-                    value = default!;
-                }
-            }
             else if (typeof(T) == typeof(object))
             {
                 // This case must also come before the _object is T case to make sure we don't leak our flags.
                 if (_object is TypeFlag flag)
                 {
-                    value = (T)s_asMethod.MakeGenericMethod(flag.Type).Invoke(this, null)!;
-                    result = true;
-                }
-                else if (_object is Type type)
-                {
-                    Debug.Assert(type.IsEnum);
-                    value = (T)s_asMethod.MakeGenericMethod(type).Invoke(this, null)!;
+                    value = (T)flag.ToObject(this);
                     result = true;
                 }
                 else if (_union.UInt64 != 0 && _object is char[] chars)

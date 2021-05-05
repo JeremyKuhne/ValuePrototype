@@ -4,6 +4,7 @@ using ValuePrototype;
 
 namespace ValuePerf
 {
+    [DisassemblyDiagnoser]
     public class StoreEnum
     {
         [Benchmark(Baseline = true)]
