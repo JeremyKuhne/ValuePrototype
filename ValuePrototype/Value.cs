@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace ValuePrototype
@@ -16,7 +16,7 @@ namespace ValuePrototype
             _union = default;
         }
 
-        public Type? Type
+        public readonly Type? Type
         {
             [SkipLocalsInit]
             get
@@ -56,8 +56,13 @@ namespace ValuePrototype
             }
         }
 
+        [DoesNotReturn]
         private static void ThrowInvalidCast() => throw new InvalidCastException();
+
+        [DoesNotReturn]
         private static void ThrowArgumentNull(string paramName) => throw new ArgumentNullException(paramName);
+
+        [DoesNotReturn]
         private static void ThrowInvalidOperation() => throw new InvalidOperationException();
 
         #region Byte
@@ -474,7 +479,6 @@ namespace ValuePrototype
             if (array is null)
             {
                 ThrowArgumentNull(nameof(segment));
-                return;
             }
 
             _object = array;
@@ -498,7 +502,6 @@ namespace ValuePrototype
             if (array is null)
             {
                 ThrowArgumentNull(nameof(segment));
-                return;
             }
 
             _object = array;
@@ -578,7 +581,7 @@ namespace ValuePrototype
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe bool TryGetValue<T>(out T value)
+        public readonly unsafe bool TryGetValue<T>(out T value)
         {
             bool success;
 
@@ -626,7 +629,7 @@ namespace ValuePrototype
             return success;
         }
 
-        private bool TryGetValueSlow<T>(out T value)
+        private readonly bool TryGetValueSlow<T>(out T value)
         {
             // Single return has a significant performance benefit.
 
@@ -801,7 +804,7 @@ namespace ValuePrototype
             return result;
         }
 
-        private bool TryGetObjectSlow<T>(out T value)
+        private readonly bool TryGetObjectSlow<T>(out T value)
         {
             // Single return has a significant performance benefit.
 
@@ -882,7 +885,7 @@ namespace ValuePrototype
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T As<T>()
+        public readonly T As<T>()
         {
             if (!TryGetValue<T>(out T value))
             {
@@ -893,7 +896,7 @@ namespace ValuePrototype
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private T CastTo<T>()
+        private readonly T CastTo<T>()
         {
             Debug.Assert(typeof(T).IsPrimitive);
             T value = Unsafe.As<Union, T>(ref Unsafe.AsRef(_union));
