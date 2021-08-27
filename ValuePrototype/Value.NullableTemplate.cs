@@ -1,20 +1,17 @@
-﻿using System.Runtime.InteropServices;
+﻿namespace ValuePrototype;
 
-namespace ValuePrototype
+public readonly partial struct Value
 {
-    public readonly partial struct Value
+    [StructLayout(LayoutKind.Sequential)]
+    private readonly struct NullableTemplate<T> where T : unmanaged
     {
-        [StructLayout(LayoutKind.Sequential)]
-        private readonly struct NullableTemplate<T> where T: unmanaged
-        {
-            public readonly bool _hasValue;
-            public readonly T _value;
+        public readonly bool _hasValue;
+        public readonly T _value;
 
-            public NullableTemplate(T value)
-            {
-                _value = value;
-                _hasValue = true;
-            }
+        public NullableTemplate(T value)
+        {
+            _value = value;
+            _hasValue = true;
         }
     }
 }

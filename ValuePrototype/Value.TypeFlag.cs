@@ -1,31 +1,27 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿namespace ValuePrototype;
 
-namespace ValuePrototype
+public readonly partial struct Value
 {
-    public readonly partial struct Value
+    private abstract class TypeFlag
     {
-        private abstract class TypeFlag
+        public abstract Type Type
         {
-            public abstract Type Type
-            {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get;
-            }
-
-            public abstract object ToObject(in Value value);
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get;
         }
 
-        private abstract class TypeFlag<T> : TypeFlag
-        {
-            public sealed override Type Type
-            {
-                [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get => typeof(T);
-            }
+        public abstract object ToObject(in Value value);
+    }
 
-            public override object ToObject(in Value value) => To(value)!;
-            public abstract T To(in Value value);
+    private abstract class TypeFlag<T> : TypeFlag
+    {
+        public sealed override Type Type
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => typeof(T);
         }
+
+        public override object ToObject(in Value value) => To(value)!;
+        public abstract T To(in Value value);
     }
 }

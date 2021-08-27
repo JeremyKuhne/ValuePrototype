@@ -1,18 +1,13 @@
-﻿using System;
-using BenchmarkDotNet.Attributes;
-using ValuePrototype;
+﻿namespace ValuePerf;
 
-namespace ValuePerf
+[DisassemblyDiagnoser]
+public class StoreEnum
 {
-    [DisassemblyDiagnoser]
-    public class StoreEnum
+    [Benchmark(Baseline = true)]
+    public DayOfWeek TryOut()
     {
-        [Benchmark(Baseline = true)]
-        public DayOfWeek TryOut()
-        {
-            Value value = Value.Create(DayOfWeek.Monday);
-            value.TryGetValue(out DayOfWeek result);
-            return result;
-        }
+        Value value = Value.Create(DayOfWeek.Monday);
+        value.TryGetValue(out DayOfWeek result);
+        return result;
     }
 }

@@ -1,122 +1,118 @@
-﻿using ValuePrototype;
-using Xunit;
+﻿namespace ValueTest;
 
-namespace ValueTest
+public class StoringSByte
 {
-    public class StoringSByte
+    public static TheoryData<sbyte> SByteData => new()
     {
-        public static TheoryData<sbyte> SByteData => new()
-        {
-            { 0 },
-            { 42 },
-            { sbyte.MaxValue },
-            { sbyte.MinValue }
-        };
+        { 0 },
+        { 42 },
+        { sbyte.MaxValue },
+        { sbyte.MinValue }
+    };
 
-        [Theory]
-        [MemberData(nameof(SByteData))]
-        public void SByteImplicit(sbyte @sbyte)
-        {
-            Value value = @sbyte;
-            Assert.Equal(@sbyte, value.As<sbyte>());
-            Assert.Equal(typeof(sbyte), value.Type);
+    [Theory]
+    [MemberData(nameof(SByteData))]
+    public void SByteImplicit(sbyte @sbyte)
+    {
+        Value value = @sbyte;
+        Assert.Equal(@sbyte, value.As<sbyte>());
+        Assert.Equal(typeof(sbyte), value.Type);
 
-            sbyte? source = @sbyte;
-            value = source;
-            Assert.Equal(source, value.As<sbyte?>());
-            Assert.Equal(typeof(sbyte), value.Type);
+        sbyte? source = @sbyte;
+        value = source;
+        Assert.Equal(source, value.As<sbyte?>());
+        Assert.Equal(typeof(sbyte), value.Type);
+    }
+
+    [Theory]
+    [MemberData(nameof(SByteData))]
+    public void SByteCreate(sbyte @sbyte)
+    {
+        Value value;
+        using (MemoryWatch.Create)
+        {
+            value = Value.Create(@sbyte);
         }
 
-        [Theory]
-        [MemberData(nameof(SByteData))]
-        public void SByteCreate(sbyte @sbyte)
+        Assert.Equal(@sbyte, value.As<sbyte>());
+        Assert.Equal(typeof(sbyte), value.Type);
+
+        sbyte? source = @sbyte;
+
+        using (MemoryWatch.Create)
         {
-            Value value;
-            using (MemoryWatch.Create)
-            {
-                value = Value.Create(@sbyte);
-            }
-
-            Assert.Equal(@sbyte, value.As<sbyte>());
-            Assert.Equal(typeof(sbyte), value.Type);
-
-            sbyte? source = @sbyte;
-
-            using (MemoryWatch.Create)
-            {
-                value = Value.Create(source);
-            }
-
-            Assert.Equal(source, value.As<sbyte?>());
-            Assert.Equal(typeof(sbyte), value.Type);
+            value = Value.Create(source);
         }
 
-        [Theory]
-        [MemberData(nameof(SByteData))]
-        public void SByteInOut(sbyte @sbyte)
-        {
-            Value value = new(@sbyte);
-            bool success = value.TryGetValue(out sbyte result);
-            Assert.True(success);
-            Assert.Equal(@sbyte, result);
+        Assert.Equal(source, value.As<sbyte?>());
+        Assert.Equal(typeof(sbyte), value.Type);
+    }
 
-            Assert.Equal(@sbyte, value.As<sbyte>());
-            Assert.Equal(@sbyte, (sbyte)value);
-        }
+    [Theory]
+    [MemberData(nameof(SByteData))]
+    public void SByteInOut(sbyte @sbyte)
+    {
+        Value value = new(@sbyte);
+        bool success = value.TryGetValue(out sbyte result);
+        Assert.True(success);
+        Assert.Equal(@sbyte, result);
 
-        [Theory]
-        [MemberData(nameof(SByteData))]
-        public void NullableSByteInSByteOut(sbyte? @sbyte)
-        {
-            sbyte? source = @sbyte;
-            Value value = new(source);
+        Assert.Equal(@sbyte, value.As<sbyte>());
+        Assert.Equal(@sbyte, (sbyte)value);
+    }
 
-            bool success = value.TryGetValue(out sbyte result);
-            Assert.True(success);
-            Assert.Equal(@sbyte, result);
+    [Theory]
+    [MemberData(nameof(SByteData))]
+    public void NullableSByteInSByteOut(sbyte? @sbyte)
+    {
+        sbyte? source = @sbyte;
+        Value value = new(source);
 
-            Assert.Equal(@sbyte, value.As<sbyte>());
+        bool success = value.TryGetValue(out sbyte result);
+        Assert.True(success);
+        Assert.Equal(@sbyte, result);
 
-            Assert.Equal(@sbyte, (sbyte)value);
-        }
+        Assert.Equal(@sbyte, value.As<sbyte>());
 
-        [Theory]
-        [MemberData(nameof(SByteData))]
-        public void SByteInNullableSByteOut(sbyte @sbyte)
-        {
-            sbyte source = @sbyte;
-            Value value = new(source);
-            bool success = value.TryGetValue(out sbyte? result);
-            Assert.True(success);
-            Assert.Equal(@sbyte, result);
+        Assert.Equal(@sbyte, (sbyte)value);
+    }
 
-            Assert.Equal(@sbyte, (sbyte?)value);
-        }
+    [Theory]
+    [MemberData(nameof(SByteData))]
+    public void SByteInNullableSByteOut(sbyte @sbyte)
+    {
+        sbyte source = @sbyte;
+        Value value = new(source);
+        bool success = value.TryGetValue(out sbyte? result);
+        Assert.True(success);
+        Assert.Equal(@sbyte, result);
 
-        [Fact]
-        public void NullSByte()
-        {
-            sbyte? source = null;
-            Value value = source;
-            Assert.Null(value.Type);
-            Assert.Equal(source, value.As<sbyte?>());
-            Assert.False(value.As<sbyte?>().HasValue);
-        }
+        Assert.Equal(@sbyte, (sbyte?)value);
+    }
 
-        [Theory]
-        [MemberData(nameof(SByteData))]
-        public void OutAsObject(sbyte @sbyte)
-        {
-            Value value = new(@sbyte);
-            object o = value.As<object>();
-            Assert.Equal(typeof(sbyte), o.GetType());
-            Assert.Equal(@sbyte, (sbyte)o);
+    [Fact]
+    public void NullSByte()
+    {
+        sbyte? source = null;
+        Value value = source;
+        Assert.Null(value.Type);
+        Assert.Equal(source, value.As<sbyte?>());
+        Assert.False(value.As<sbyte?>().HasValue);
+    }
 
-            sbyte? n = @sbyte;
-            value = new(n);
-            o = value.As<object>();
-            Assert.Equal(typeof(sbyte), o.GetType());
-            Assert.Equal(@sbyte, (sbyte)o);
-        }
+    [Theory]
+    [MemberData(nameof(SByteData))]
+    public void OutAsObject(sbyte @sbyte)
+    {
+        Value value = new(@sbyte);
+        object o = value.As<object>();
+        Assert.Equal(typeof(sbyte), o.GetType());
+        Assert.Equal(@sbyte, (sbyte)o);
+
+        sbyte? n = @sbyte;
+        value = new(n);
+        o = value.As<object>();
+        Assert.Equal(typeof(sbyte), o.GetType());
+        Assert.Equal(@sbyte, (sbyte)o);
     }
 }

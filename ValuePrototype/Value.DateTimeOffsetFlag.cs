@@ -1,15 +1,12 @@
-﻿using System;
+﻿namespace ValuePrototype;
 
-namespace ValuePrototype
+public readonly partial struct Value
 {
-    public readonly partial struct Value
+    private sealed class DateTimeOffsetFlag : TypeFlag<DateTimeOffset>
     {
-        private sealed class DateTimeOffsetFlag : TypeFlag<DateTimeOffset>
-        {
-            public static DateTimeOffsetFlag Instance { get; } = new();
+        public static DateTimeOffsetFlag Instance { get; } = new();
 
-            public override DateTimeOffset To(in Value value)
-                => new(new DateTime(value._union.Ticks, DateTimeKind.Utc));
-        }
+        public override DateTimeOffset To(in Value value)
+            => new(new DateTime(value._union.Ticks, DateTimeKind.Utc));
     }
 }
