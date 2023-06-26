@@ -1,4 +1,6 @@
-﻿namespace ValuePerf;
+﻿using System.Threading.Tasks;
+
+namespace ValuePerf;
 
 [MemoryDiagnoser]
 public class Table
