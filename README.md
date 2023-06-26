@@ -18,3 +18,5 @@ Wrapping arbitrary values without boxing of common types.
 
 - Support `ArraySegment<T>` without boxing
 - Support UTC `DateTime` and `DateTimeOffset` without boxing
+
+[As proposed in .NET](https://github.com/dotnet/runtime/issues/28882)
