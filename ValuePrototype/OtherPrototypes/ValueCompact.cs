@@ -130,11 +130,14 @@ public readonly struct ValueCompact
 
     public static explicit operator string(ValueCompact variant)
     {
-        var str = variant._obj as string;
-        if (str != null) return str;
+        string? str = variant._obj as string;
+        if (str is not null)
+        {
+            return str;
+        }
 
-        var utf8 = variant._obj as byte[];
-        if (utf8 != null)
+        byte[]? utf8 = variant._obj as byte[];
+        if (utf8 is not null)
         {
             var decoded = Encoding.UTF8.GetString(utf8, (int)(variant._i64 << 32), (int)variant._i64);
             return decoded;
@@ -305,7 +308,7 @@ public readonly struct ValueCompact
     private T CastTo<T>()
     {
         Debug.Assert(typeof(T).IsPrimitive);
-        T value = Unsafe.As<long, T>(ref Unsafe.AsRef(_i64));
+        T value = Unsafe.As<long, T>(ref Unsafe.AsRef(in _i64));
         return value;
     }
 }

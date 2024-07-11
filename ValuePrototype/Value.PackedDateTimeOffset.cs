@@ -40,11 +40,10 @@ public readonly partial struct Value
             ulong ticks = (ulong)dateTime.Ticks;
             if (ticks > BaseTicks && ticks < MaxTicks)
             {
-                ulong data = default;
                 int minutes = offset.Minutes;
                 if (minutes % 15 == 0)
                 {
-                    data = (ulong)(minutes / 15) << MinuteShift;
+                    ulong data = (ulong)(minutes / 15) << MinuteShift;
                     int hours = offset.Hours + HourOffset;
 
                     // Only valid offset hours are -14 to 14
@@ -65,6 +64,7 @@ public readonly partial struct Value
                 (int)(((_data & HourMask) >> HourShift) - HourOffset),
                 (int)((_data & MinuteMask) >> MinuteShift),
                 0);
+
             return new((long)((_data & TickMask) + BaseTicks), offset);
         }
     }

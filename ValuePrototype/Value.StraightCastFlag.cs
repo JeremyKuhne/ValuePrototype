@@ -7,6 +7,6 @@ public readonly partial struct Value
         public static StraightCastFlag<T> Instance { get; } = new();
 
         public override T To(in Value value)
-            => Unsafe.As<Union, T>(ref Unsafe.AsRef(value._union));
+            => Unsafe.As<Union, T>(ref Unsafe.AsRef(in value._union));
     }
 }

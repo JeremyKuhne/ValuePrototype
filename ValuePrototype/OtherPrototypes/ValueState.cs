@@ -60,7 +60,7 @@ public readonly struct ValueState
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private T CastTo<T>() where T : unmanaged
     {
-        T value = Unsafe.As<Union, T>(ref Unsafe.AsRef(_union));
+        T value = Unsafe.As<Union, T>(ref Unsafe.AsRef(in _union));
         return value;
     }
 

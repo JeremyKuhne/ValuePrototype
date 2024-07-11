@@ -525,38 +525,38 @@ public readonly partial struct Value
     public static Value Create<T>(T value)
     {
         // Explicit cast for types we don't box
-        if (typeof(T) == typeof(bool)) return new(Unsafe.As<T, bool>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(byte)) return new(Unsafe.As<T, byte>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(sbyte)) return new(Unsafe.As<T, sbyte>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(char)) return new(Unsafe.As<T, char>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(short)) return new(Unsafe.As<T, short>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(int)) return new(Unsafe.As<T, int>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(long)) return new(Unsafe.As<T, long>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(ushort)) return new(Unsafe.As<T, ushort>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(uint)) return new(Unsafe.As<T, uint>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(ulong)) return new(Unsafe.As<T, ulong>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(float)) return new(Unsafe.As<T, float>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(double)) return new(Unsafe.As<T, double>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(DateTime)) return new(Unsafe.As<T, DateTime>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(DateTimeOffset)) return new(Unsafe.As<T, DateTimeOffset>(ref Unsafe.AsRef(value)));
+        if (typeof(T) == typeof(bool)) return new(Unsafe.As<T, bool>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(byte)) return new(Unsafe.As<T, byte>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(sbyte)) return new(Unsafe.As<T, sbyte>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(char)) return new(Unsafe.As<T, char>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(short)) return new(Unsafe.As<T, short>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(int)) return new(Unsafe.As<T, int>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(long)) return new(Unsafe.As<T, long>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(ushort)) return new(Unsafe.As<T, ushort>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(uint)) return new(Unsafe.As<T, uint>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(ulong)) return new(Unsafe.As<T, ulong>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(float)) return new(Unsafe.As<T, float>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(double)) return new(Unsafe.As<T, double>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(DateTime)) return new(Unsafe.As<T, DateTime>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(DateTimeOffset)) return new(Unsafe.As<T, DateTimeOffset>(ref Unsafe.AsRef(in value)));
 
-        if (typeof(T) == typeof(bool?)) return new(Unsafe.As<T, bool?>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(byte?)) return new(Unsafe.As<T, byte?>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(sbyte?)) return new(Unsafe.As<T, sbyte?>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(char?)) return new(Unsafe.As<T, char?>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(short?)) return new(Unsafe.As<T, short?>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(int?)) return new(Unsafe.As<T, int?>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(long?)) return new(Unsafe.As<T, long?>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(ushort?)) return new(Unsafe.As<T, ushort?>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(uint?)) return new(Unsafe.As<T, uint?>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(ulong?)) return new(Unsafe.As<T, ulong?>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(float?)) return new(Unsafe.As<T, float?>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(double?)) return new(Unsafe.As<T, double?>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(DateTime?)) return new(Unsafe.As<T, DateTime?>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(DateTimeOffset?)) return new(Unsafe.As<T, DateTimeOffset?>(ref Unsafe.AsRef(value)));
+        if (typeof(T) == typeof(bool?)) return new(Unsafe.As<T, bool?>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(byte?)) return new(Unsafe.As<T, byte?>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(sbyte?)) return new(Unsafe.As<T, sbyte?>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(char?)) return new(Unsafe.As<T, char?>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(short?)) return new(Unsafe.As<T, short?>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(int?)) return new(Unsafe.As<T, int?>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(long?)) return new(Unsafe.As<T, long?>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(ushort?)) return new(Unsafe.As<T, ushort?>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(uint?)) return new(Unsafe.As<T, uint?>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(ulong?)) return new(Unsafe.As<T, ulong?>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(float?)) return new(Unsafe.As<T, float?>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(double?)) return new(Unsafe.As<T, double?>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(DateTime?)) return new(Unsafe.As<T, DateTime?>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(DateTimeOffset?)) return new(Unsafe.As<T, DateTimeOffset?>(ref Unsafe.AsRef(in value)));
 
-        if (typeof(T) == typeof(ArraySegment<byte>)) return new(Unsafe.As<T, ArraySegment<byte>>(ref Unsafe.AsRef(value)));
-        if (typeof(T) == typeof(ArraySegment<char>)) return new(Unsafe.As<T, ArraySegment<char>>(ref Unsafe.AsRef(value)));
+        if (typeof(T) == typeof(ArraySegment<byte>)) return new(Unsafe.As<T, ArraySegment<byte>>(ref Unsafe.AsRef(in value)));
+        if (typeof(T) == typeof(ArraySegment<char>)) return new(Unsafe.As<T, ArraySegment<char>>(ref Unsafe.AsRef(in value)));
 
         if (typeof(T).IsEnum)
         {
@@ -599,17 +599,19 @@ public readonly partial struct Value
         }
         else if (typeof(T) == typeof(DateTime) && _object == TypeFlags.DateTime)
         {
-            value = Unsafe.As<DateTime, T>(ref Unsafe.AsRef(_union.DateTime));
+            value = Unsafe.As<DateTime, T>(ref Unsafe.AsRef(in _union.DateTime));
             success = true;
         }
         else if (typeof(T) == typeof(DateTimeOffset) && _object == TypeFlags.DateTimeOffset)
         {
-            value = Unsafe.As<DateTimeOffset, T>(ref Unsafe.AsRef(new DateTimeOffset(_union.Ticks, TimeSpan.Zero)));
+            DateTimeOffset dto = new(_union.Ticks, TimeSpan.Zero);
+            value = Unsafe.As<DateTimeOffset, T>(ref Unsafe.AsRef(in dto));
             success = true;
         }
         else if (typeof(T) == typeof(DateTimeOffset) && _object == TypeFlags.PackedDateTimeOffset)
         {
-            value = Unsafe.As<DateTimeOffset, T>(ref Unsafe.AsRef(_union.PackedDateTimeOffset.Extract()));
+            DateTimeOffset dto = _union.PackedDateTimeOffset.Extract();
+            value = Unsafe.As<DateTimeOffset, T>(ref Unsafe.AsRef(in dto));
             success = true;
         }
         else if (typeof(T).IsValueType)
@@ -680,77 +682,92 @@ public readonly partial struct Value
         }
         else if (typeof(T) == typeof(int?) && _object == TypeFlags.Int32)
         {
-            value = Unsafe.As<int?, T>(ref Unsafe.AsRef((int?)_union.Int32));
+            int? @int = _union.Int32;
+            value = Unsafe.As<int?, T>(ref Unsafe.AsRef(in @int));
             result = true;
         }
         else if (typeof(T) == typeof(long?) && _object == TypeFlags.Int64)
         {
-            value = Unsafe.As<long?, T>(ref Unsafe.AsRef((long?)_union.Int64));
+            long? @long = _union.Int64;
+            value = Unsafe.As<long?, T>(ref Unsafe.AsRef(in @long));
             result = true;
         }
         else if (typeof(T) == typeof(bool?) && _object == TypeFlags.Boolean)
         {
-            value = Unsafe.As<bool?, T>(ref Unsafe.AsRef((bool?)_union.Boolean));
+            bool? @bool = _union.Boolean;
+            value = Unsafe.As<bool?, T>(ref Unsafe.AsRef(in @bool));
             result = true;
         }
         else if (typeof(T) == typeof(float?) && _object == TypeFlags.Single)
         {
-            value = Unsafe.As<float?, T>(ref Unsafe.AsRef((float?)_union.Single));
+            float? single = _union.Single;
+            value = Unsafe.As<float?, T>(ref Unsafe.AsRef(in single));
             result = true;
         }
         else if (typeof(T) == typeof(double?) && _object == TypeFlags.Double)
         {
-            value = Unsafe.As<double?, T>(ref Unsafe.AsRef((double?)_union.Double));
+            double? @double = _union.Double;
+            value = Unsafe.As<double?, T>(ref Unsafe.AsRef(in @double));
             result = true;
         }
         else if (typeof(T) == typeof(uint?) && _object == TypeFlags.UInt32)
         {
-            value = Unsafe.As<uint?, T>(ref Unsafe.AsRef((uint?)_union.UInt32));
+            uint? @uint = _union.UInt32;
+            value = Unsafe.As<uint?, T>(ref Unsafe.AsRef(in @uint));
             result = true;
         }
         else if (typeof(T) == typeof(ulong?) && _object == TypeFlags.UInt64)
         {
-            value = Unsafe.As<ulong?, T>(ref Unsafe.AsRef((ulong?)_union.UInt64));
+            ulong? @ulong = _union.UInt64;
+            value = Unsafe.As<ulong?, T>(ref Unsafe.AsRef(in @ulong));
             result = true;
         }
         else if (typeof(T) == typeof(char?) && _object == TypeFlags.Char)
         {
-            value = Unsafe.As<char?, T>(ref Unsafe.AsRef((char?)_union.Char));
+            char? @char = _union.Char;
+            value = Unsafe.As<char?, T>(ref Unsafe.AsRef(in @char));
             result = true;
         }
         else if (typeof(T) == typeof(short?) && _object == TypeFlags.Int16)
         {
-            value = Unsafe.As<short?, T>(ref Unsafe.AsRef((short?)_union.Int16));
+            short? @short = _union.Int16;
+            value = Unsafe.As<short?, T>(ref Unsafe.AsRef(in @short));
             result = true;
         }
         else if (typeof(T) == typeof(ushort?) && _object == TypeFlags.UInt16)
         {
-            value = Unsafe.As<ushort?, T>(ref Unsafe.AsRef((ushort?)_union.UInt16));
+            ushort? @ushort = _union.UInt16;
+            value = Unsafe.As<ushort?, T>(ref Unsafe.AsRef(in @ushort));
             result = true;
         }
         else if (typeof(T) == typeof(byte?) && _object == TypeFlags.Byte)
         {
-            value = Unsafe.As<byte?, T>(ref Unsafe.AsRef((byte?)_union.Byte));
+            byte? @byte = _union.Byte;
+            value = Unsafe.As<byte?, T>(ref Unsafe.AsRef(in @byte));
             result = true;
         }
         else if (typeof(T) == typeof(sbyte?) && _object == TypeFlags.SByte)
         {
-            value = Unsafe.As<sbyte?, T>(ref Unsafe.AsRef((sbyte?)_union.SByte));
+            sbyte? @sbyte = _union.SByte;
+            value = Unsafe.As<sbyte?, T>(ref Unsafe.AsRef(in @sbyte));
             result = true;
         }
         else if (typeof(T) == typeof(DateTime?) && _object == TypeFlags.DateTime)
         {
-            value = Unsafe.As<DateTime?, T>(ref Unsafe.AsRef((DateTime?)_union.DateTime));
+            DateTime? dateTime = _union.DateTime;
+            value = Unsafe.As<DateTime?, T>(ref Unsafe.AsRef(in dateTime));
             result = true;
         }
         else if (typeof(T) == typeof(DateTimeOffset?) && _object == TypeFlags.DateTimeOffset)
         {
-            value = Unsafe.As<DateTimeOffset?, T>(ref Unsafe.AsRef((DateTimeOffset?)new DateTimeOffset(_union.Ticks, TimeSpan.Zero)));
+            DateTimeOffset? dto = new DateTimeOffset(_union.Ticks, TimeSpan.Zero);
+            value = Unsafe.As<DateTimeOffset?, T>(ref Unsafe.AsRef(in dto));
             result = true;
         }
         else if (typeof(T) == typeof(DateTimeOffset?) && _object == TypeFlags.PackedDateTimeOffset)
         {
-            value = Unsafe.As<DateTimeOffset?, T>(ref Unsafe.AsRef((DateTimeOffset?)_union.PackedDateTimeOffset.Extract()));
+            DateTimeOffset? dto = _union.PackedDateTimeOffset.Extract();
+            value = Unsafe.As<DateTimeOffset?, T>(ref Unsafe.AsRef(in dto));
             result = true;
         }
         else if (Nullable.GetUnderlyingType(typeof(T)) is Type underlyingType
@@ -768,19 +785,23 @@ public readonly partial struct Value
             switch (size)
             {
                 case (2):
-                    value = Unsafe.As<NullableTemplate<byte>, T>(ref Unsafe.AsRef(new NullableTemplate<byte>(_union.Byte)));
+                    NullableTemplate<byte> byteTemplate = new(_union.Byte);
+                    value = Unsafe.As<NullableTemplate<byte>, T>(ref Unsafe.AsRef(in byteTemplate));
                     result = true;
                     break;
                 case (4):
-                    value = Unsafe.As<NullableTemplate<ushort>, T>(ref Unsafe.AsRef(new NullableTemplate<ushort>(_union.UInt16)));
+                    NullableTemplate<ushort> ushortTemplate = new(_union.UInt16);
+                    value = Unsafe.As<NullableTemplate<ushort>, T>(ref Unsafe.AsRef(in ushortTemplate));
                     result = true;
                     break;
                 case (8):
-                    value = Unsafe.As<NullableTemplate<uint>, T>(ref Unsafe.AsRef(new NullableTemplate<uint>(_union.UInt32)));
+                    NullableTemplate<uint> uintTemplate = new(_union.UInt32);
+                    value = Unsafe.As<NullableTemplate<uint>, T>(ref Unsafe.AsRef(in uintTemplate));
                     result = true;
                     break;
                 case (16):
-                    value = Unsafe.As<NullableTemplate<ulong>, T>(ref Unsafe.AsRef(new NullableTemplate<ulong>(_union.UInt64)));
+                    NullableTemplate<ulong> ulongTemplate = new(_union.UInt64);
+                    value = Unsafe.As<NullableTemplate<ulong>, T>(ref Unsafe.AsRef(in ulongTemplate));
                     result = true;
                     break;
                 default:
@@ -894,7 +915,7 @@ public readonly partial struct Value
     private readonly T CastTo<T>()
     {
         Debug.Assert(typeof(T).IsPrimitive);
-        T value = Unsafe.As<Union, T>(ref Unsafe.AsRef(_union));
+        T value = Unsafe.As<Union, T>(ref Unsafe.AsRef(in _union));
         return value;
     }
     #endregion

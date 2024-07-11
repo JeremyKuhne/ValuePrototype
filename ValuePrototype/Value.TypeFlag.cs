@@ -21,7 +21,7 @@ public readonly partial struct Value
             get => typeof(T);
         }
 
-        public override object ToObject(in Value value) => To(value)!;
+        public sealed override object ToObject(in Value value) => To(value)!;
         public abstract T To(in Value value);
     }
 }
