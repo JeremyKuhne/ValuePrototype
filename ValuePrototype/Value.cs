@@ -13,7 +13,6 @@ public readonly partial struct Value
 
     public readonly Type? Type
     {
-        [SkipLocalsInit]
         get
         {
             Type? type;
@@ -29,8 +28,10 @@ public readonly partial struct Value
             {
                 type = _object.GetType();
 
-                if (_union.UInt64 != 0 && type.IsArray)
+                if (_union.UInt64 != 0)
                 {
+                    Debug.Assert(type.IsArray);
+
                     // We have an ArraySegment
                     if (type == typeof(byte[]))
                     {
@@ -42,7 +43,7 @@ public readonly partial struct Value
                     }
                     else
                     {
-                        ThrowInvalidOperation();
+                        Debug.Fail($"Unexpected type {type.Name}.");
                     }
                 }
             }
