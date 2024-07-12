@@ -64,14 +64,12 @@ public readonly partial struct Value
     #region Byte
     public Value(byte value)
     {
-        this = default;
         _object = TypeFlags.Byte;
         _union.Byte = value;
     }
 
     public Value(byte? value)
     {
-        this = default;
         if (value.HasValue)
         {
             _object = TypeFlags.Byte;
@@ -92,14 +90,12 @@ public readonly partial struct Value
     #region SByte
     public Value(sbyte value)
     {
-        this = default;
         _object = TypeFlags.SByte;
         _union.SByte = value;
     }
 
     public Value(sbyte? value)
     {
-        this = default;
         if (value.HasValue)
         {
             _object = TypeFlags.SByte;
@@ -120,14 +116,12 @@ public readonly partial struct Value
     #region Boolean
     public Value(bool value)
     {
-        this = default;
         _object = TypeFlags.Boolean;
         _union.Boolean = value;
     }
 
     public Value(bool? value)
     {
-        this = default;
         if (value.HasValue)
         {
             _object = TypeFlags.Boolean;
@@ -148,14 +142,12 @@ public readonly partial struct Value
     #region Char
     public Value(char value)
     {
-        this = default;
         _object = TypeFlags.Char;
         _union.Char = value;
     }
 
     public Value(char? value)
     {
-        this = default;
         if (value.HasValue)
         {
             _object = TypeFlags.Char;
@@ -176,14 +168,12 @@ public readonly partial struct Value
     #region Int16
     public Value(short value)
     {
-        this = default;
         _object = TypeFlags.Int16;
         _union.Int16 = value;
     }
 
     public Value(short? value)
     {
-        this = default;
         if (value.HasValue)
         {
             _object = TypeFlags.Int16;
@@ -204,14 +194,12 @@ public readonly partial struct Value
     #region Int32
     public Value(int value)
     {
-        this = default;
         _object = TypeFlags.Int32;
         _union.Int32 = value;
     }
 
     public Value(int? value)
     {
-        this = default;
         if (value.HasValue)
         {
             _object = TypeFlags.Int32;
@@ -232,14 +220,12 @@ public readonly partial struct Value
     #region Int64
     public Value(long value)
     {
-        this = default;
         _object = TypeFlags.Int64;
         _union.Int64 = value;
     }
 
     public Value(long? value)
     {
-        this = default;
         if (value.HasValue)
         {
             _object = TypeFlags.Int64;
@@ -260,14 +246,12 @@ public readonly partial struct Value
     #region UInt16
     public Value(ushort value)
     {
-        this = default;
         _object = TypeFlags.UInt16;
         _union.UInt16 = value;
     }
 
     public Value(ushort? value)
     {
-        this = default;
         if (value.HasValue)
         {
             _object = TypeFlags.UInt16;
@@ -288,14 +272,12 @@ public readonly partial struct Value
     #region UInt32
     public Value(uint value)
     {
-        this = default;
         _object = TypeFlags.UInt32;
         _union.UInt32 = value;
     }
 
     public Value(uint? value)
     {
-        this = default;
         if (value.HasValue)
         {
             _object = TypeFlags.UInt32;
@@ -316,14 +298,12 @@ public readonly partial struct Value
     #region UInt64
     public Value(ulong value)
     {
-        this = default;
         _object = TypeFlags.UInt64;
         _union.UInt64 = value;
     }
 
     public Value(ulong? value)
     {
-        this = default;
         if (value.HasValue)
         {
             _object = TypeFlags.UInt64;
@@ -344,14 +324,12 @@ public readonly partial struct Value
     #region Single
     public Value(float value)
     {
-        this = default;
         _object = TypeFlags.Single;
         _union.Single = value;
     }
 
     public Value(float? value)
     {
-        this = default;
         if (value.HasValue)
         {
             _object = TypeFlags.Single;
@@ -372,14 +350,12 @@ public readonly partial struct Value
     #region Double
     public Value(double value)
     {
-        this = default;
         _object = TypeFlags.Double;
         _union.Double = value;
     }
 
     public Value(double? value)
     {
-        this = default;
         if (value.HasValue)
         {
             _object = TypeFlags.Double;
@@ -400,7 +376,6 @@ public readonly partial struct Value
     #region DateTimeOffset
     public Value(DateTimeOffset value)
     {
-        this = default;
         TimeSpan offset = value.Offset;
         if (offset.Ticks == 0)
         {
@@ -421,7 +396,6 @@ public readonly partial struct Value
 
     public Value(DateTimeOffset? value)
     {
-        this = default;
         if (!value.HasValue)
         {
             _object = null;
@@ -441,15 +415,12 @@ public readonly partial struct Value
     #region DateTime
     public Value(DateTime value)
     {
-        this = default;
-
         _union.DateTime = value;
         _object = TypeFlags.DateTime;
     }
 
     public Value(DateTime? value)
     {
-        this = default;
         if (value.HasValue)
         {
             _object = TypeFlags.DateTime;
@@ -470,7 +441,6 @@ public readonly partial struct Value
     #region ArraySegment
     public Value(ArraySegment<byte> segment)
     {
-        this = default;
         byte[]? array = segment.Array;
         if (array is null)
         {
@@ -493,7 +463,6 @@ public readonly partial struct Value
 
     public Value(ArraySegment<char> segment)
     {
-        this = default;
         char[]? array = segment.Array;
         if (array is null)
         {
@@ -595,7 +564,7 @@ public readonly partial struct Value
             || (typeof(T) == typeof(uint) && _object == TypeFlags.UInt32)
             || (typeof(T) == typeof(ulong) && _object == TypeFlags.UInt64)))
         {
-            value = CastTo<T>();
+            value = Unsafe.As<Union, T>(ref Unsafe.AsRef(in _union));
             success = true;
         }
         else if (typeof(T) == typeof(DateTime) && _object == TypeFlags.DateTime)
@@ -904,19 +873,11 @@ public readonly partial struct Value
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly T As<T>()
     {
-        if (!TryGetValue<T>(out T value))
+        if (!TryGetValue(out T value))
         {
             ThrowInvalidCast();
         }
 
-        return value;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private readonly T CastTo<T>()
-    {
-        Debug.Assert(typeof(T).IsPrimitive);
-        T value = Unsafe.As<Union, T>(ref Unsafe.AsRef(in _union));
         return value;
     }
     #endregion
