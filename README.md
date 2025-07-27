@@ -19,4 +19,6 @@ Wrapping arbitrary values without boxing of common types.
 - Support `ArraySegment<T>` without boxing
 - Support UTC `DateTime` and `DateTimeOffset` without boxing
 
+This code has been included in [Touki](https://github.com/JeremyKuhne/touki) for both .NET Framework 4.7.2 and .NET 9.
+
 [As proposed in .NET](https://github.com/dotnet/runtime/issues/28882)
